@@ -1,2 +1,2 @@
-# Gem-Game
-A game that uses gems to fight enemies
+# DJ App
+A dj app for single use and two player collabs

@@ -1,0 +1,104 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  box-sizing: border-box;
+  background:black;
+  color:white;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Partials
+|--------------------------------------------------------------------------
+*/
+
+.nav{
+  height:10vh;
+  border:1px solid red;
+}
+
+.end{
+  height:10vh;
+  border:1px solid blue;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Main Turntable Components
+|--------------------------------------------------------------------------
+*/
+
+.turntable{
+  border:1px solid white;
+  display:flex;
+  justify-content:space-between;;
+  flex-wrap:wrap;
+}
+
+.tb-half{
+  height:70vh;
+  width:49vw;
+  /* display:inline-block; */
+  border:1px solid purple;
+  display:flex;
+}
+
+.tb-left{
+  flex-direction:row;
+}
+
+.tb-right{
+  flex-direction:row-reverse;
+}
+
+.tb-disc{
+  height:100%;
+  width:60%;
+}
+
+.tb-knobs{
+  height:100%;
+  width:50%;
+}
+
+.crossfader{
+  height:10vh;
+  width:100vw;
+  border:1px solid green;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Turntable Parts
+|--------------------------------------------------------------------------
+*/
+
+.fx{
+  /* width:50%; */
+  height:20%;
+  border:1px solid brown;
+}
+
+.vinyl{
+  /* width:50%; */
+  height:50%;
+  border:1px solid orange;
+}
+
+.drum-pads{
+  /* width:50%; */
+  height:30%;
+  border:1px solid pink;
+}
+
+.eq{
+  height:50%;
+  border:1px solid white;
+}
+
+.sliders{
+  height:50%;
+  border:1px solid red;
+}
+
