@@ -76,13 +76,13 @@
 
 .fx{
   /* width:50%; */
-  height:20%;
+  height:15%;
   border:1px solid brown;
 }
 
 .vinyl{
   /* width:50%; */
-  height:50%;
+  height:55%;
   border:1px solid orange;
 }
 
@@ -102,3 +102,30 @@
   border:1px solid red;
 }
 
+/*
+|--------------------------------------------------------------------------
+| Turntable Items
+|--------------------------------------------------------------------------
+*/
+
+.jog-wheel{
+  width:70%;
+  height:100%;
+  /* border:1px solid white; */
+  background:gray;
+  border-radius:50%;
+  margin:0 auto;
+  position: relative;
+}
+
+.jog-wheel::before{
+  content:"";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 100px 10px 0 10px;
+  border-color: #111 transparent transparent transparent;
+  top:0;
+  left:45%;
+}
