@@ -6,8 +6,18 @@ import Crossfader from './Crossfader';
 export default function Turntable(props) {
   return (
     <section className="turntable">
-      <TurntableHalf scratch={props.scratch} side="tb-left" />
-      <TurntableHalf scratch={props.scratch} side="tb-right" />
+      <TurntableHalf
+        scratch={props.scratch}
+        play={props.play}
+        stop={props.stop}
+        side="tb-left"
+      />
+      <TurntableHalf
+        scratch={props.scratch}
+        play={props.play}
+        stop={props.stop}
+        side="tb-left"
+      />
       <Crossfader />
     </section>
   );

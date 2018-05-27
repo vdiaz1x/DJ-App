@@ -7,16 +7,24 @@ A dj app for single use and two player collabs
 
 |  Day | Deliverable | Complete? |
 |---|---|--|
+| Day 1 (T) | Planning |--|
+| Day 2 (F) | Basic Layout/Research |--|
+| Day 3 (S) | More Research/Readme |--|
+| Day 4 (M) | Priority Matrix/Wireframe/Music Manipulation |--|
+| Day 5 (T) | Music Manipulation |--|
+| Day 6 (W) | Linking UI to Music |--|
+| Day 7 (T) | Linking UI to Music |--|
+| Day 8 (F) | Linking UI to Music |--|
+| Day 9 (S) | PostMVP/Bug Fixes |--|
+| Day 10 (S) | PostMVP/Bug Fixes |--|
+| Day 11 (M) | Presentation |--|
 
 ## Project Description
 
 This project is based off of a DJ's turntable/controller. It will attempt to replicate playing two songs, ability to scratch music in real time, add filters/fx to music, add sound bites, and modify music with equalizers. You will be able to log in and add music to your list.
 
 ## Wireframes
-
-### Original Brainstorm
-
-[Part 1]()
+[Basic Look](https://photos.app.goo.gl/Xuz56FoSVXWuxWzB3)
 
 ## Priority Matrix
 
@@ -36,9 +44,6 @@ This project is based off of a DJ's turntable/controller. It will attempt to rep
 - Add PostMVP Features
 
 ## User Stories
-
-### Landing Page
-
 - As a user of this DJ Turntable, I should be able to play music.
 - As a user, I should be able to add filters to music.
 - As a user, I should be able to change music with equalizers.
@@ -55,13 +60,18 @@ This project is based off of a DJ's turntable/controller. It will attempt to rep
 - Volume/Gain Slider/Knob
 - Log in/Register Page
 
-## MVP
+## Deliverables
 
-### Deliverables
+### MVP
+- Play music
+- Ability to scratch/change music playback via jog wheel
+- Ability to add effects to music
 
-## MVP
-
-## POST MVP
+### POST MVP
+- Port to React Native
+- Login/Register/Auth
+- Store user songs
+- Ability for two people to mix songs
 
 ## Functional Components
 
@@ -76,15 +86,14 @@ Ruby on Rails
 
 ## Code Snippet
 
-
 ## Issues and Resolutions
 
 ### Major Issue
 
 #### Error/Resolution
 
-**ERROR**: eslint regenerator-runtime, prefer iteration to loops
-**RESOLUTION**: Instead of using for...of loops for arrays, I used forEach
+**ERROR**: Inability to add SoundManager2 created song object to state
+**RESOLUTION**: Have to add SM2 itself to state, as songs are made internally in the SM2 object
 
 
 ## References

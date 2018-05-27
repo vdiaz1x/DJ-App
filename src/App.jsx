@@ -15,17 +15,31 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      play: false,
+      stop: false,
       // state
     };
 
     // bindings
     this.scratch = this.scratch.bind(this);
+    this.play = this.play.bind(this);
+    this.stop = this.stop.bind(this);
   }
 
   // functions
   scratch(e) {
     // console.log(this.state);
     SM.play('test');
+  }
+
+  play(song) {
+    // console.log(this.state.play);
+    !this.state.play ? SM.play(song) : SM.pause(song);
+    this.setState({ play: !this.state.play });
+  }
+
+  stop(song) {
+    SM.stop(song);
   }
 
   componentWillMount() {
@@ -46,7 +60,11 @@ class App extends Component {
     return (
       <div className="App">
         <Nav />
-        <Turntable scratch={this.scratch} />
+        <Turntable
+          scratch={this.scratch}
+          play={this.play}
+          stop={this.stop}
+        />
         <End />
       </div>
     );
