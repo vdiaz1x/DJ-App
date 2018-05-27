@@ -23,6 +23,7 @@ class App extends Component {
         v1: 50,
         v2: 50,
       },
+      cfade: 0,
     };
 
     // bindings
@@ -30,6 +31,7 @@ class App extends Component {
     this.play = this.play.bind(this);
     this.stop = this.stop.bind(this);
     this.volume = this.volume.bind(this);
+    this.crossfade = this.crossfade.bind(this);
   }
 
   // component will mount initialization
@@ -74,20 +76,22 @@ class App extends Component {
         [side]: vol,
       },
     });
-    console.log(this.state);
-    console.log(vol);
-    console.log(song);
-    console.log(side);
     SM.setVolume(song, vol);
   }
 
-  // crossfade = (cfade1, cfade2) => {
-  //   this.setState({
-  //     cfade1,
-  //     cfade2
-  //   })
-  //   SM.setVolume()
-  // }
+  crossfade(cfade) {
+    this.setState({
+      cfade,
+    // SM.setVolume()
+    });
+    const cf1 = this.state.cfade > 0 ? 100 - cfade : 100;
+    const cf2 = this.state.cfade < 0 ? 100 + cfade : 100;
+    console.log(cf1);
+    console.log(cf2);
+    // console.log(this.state.cfade);
+    SM.setVolume('test', cf1);
+    SM.setVolume('synth', cf2);
+  }
 
   // render
   render() {
@@ -101,6 +105,8 @@ class App extends Component {
           stop={this.stop}
           vol={this.state.vol}
           volume={this.volume}
+          cfade={this.state.cfade}
+          crossfade={this.crossfade}
         />
         <End />
       </div>

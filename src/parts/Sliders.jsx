@@ -15,8 +15,7 @@ export default function Sliders(props) {
         className="volume-slider"
         min={0}
         max={100}
-        // song={song}
-        value={value}
+        value={-value}
         tooltip={false}
         // orientation="vertical"
         onChange={value => props.volume(value, song, side)}

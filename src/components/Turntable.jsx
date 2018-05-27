@@ -4,6 +4,7 @@ import TurntableHalf from './TurntableHalf';
 import Crossfader from './Crossfader';
 
 export default function Turntable(props) {
+  // console.log(props);
   return (
     <section className="turntable">
       <TurntableHalf
@@ -22,7 +23,10 @@ export default function Turntable(props) {
         volume={props.volume}
         side="tb-right"
       />
-      <Crossfader />
+      <Crossfader
+        cfade={props.cfade}
+        crossfade={props.crossfade}
+      />
     </section>
   );
 }
