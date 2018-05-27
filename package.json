@@ -4,10 +4,12 @@
   "private": true,
   "dependencies": {
     "eslint": "^4.19.1",
+    "p5": "^0.6.1",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-scripts": "1.1.4",
     "react-sound": "^1.2.0",
+    "soundmanager2": "^2.97.20170602",
     "stylelint": "^9.2.1",
     "stylelint-config-recommended": "^2.1.0",
     "stylelint-config-standard": "^18.2.0"

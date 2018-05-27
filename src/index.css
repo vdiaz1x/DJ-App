@@ -129,3 +129,16 @@
   top:0;
   left:45%;
 }
+
+.sm2-bar-ui {
+  /* height:100px; */
+ font-size: 16px;
+}
+.sm2-bar-ui .sm2-main-controls,
+.sm2-bar-ui .sm2-playlist-drawer {
+  height:100px;
+ background-color: #9c9c9c;
+}
+.sm2-bar-ui .sm2-inline-texture {
+ background: #222;
+}
