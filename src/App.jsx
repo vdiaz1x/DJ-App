@@ -15,33 +15,20 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      SM: {},
       play: false,
-      stop: false,
-      // state
+      value: 10,
+      // stop: false,
+      vol: 50,
     };
 
     // bindings
-    this.scratch = this.scratch.bind(this);
+    // this.scratch = this.scratch.bind(this);
     this.play = this.play.bind(this);
     this.stop = this.stop.bind(this);
   }
 
-  // functions
-  scratch(e) {
-    // console.log(this.state);
-    SM.play('test');
-  }
-
-  play(song) {
-    // console.log(this.state.play);
-    !this.state.play ? SM.play(song) : SM.pause(song);
-    this.setState({ play: !this.state.play });
-  }
-
-  stop(song) {
-    SM.stop(song);
-  }
-
+  // component will mount initialization
   componentWillMount() {
     this.setState({
       SM: SM.setup({
@@ -54,6 +41,30 @@ class App extends Component {
       }),
     });
   }
+
+  // functions
+  // scratch(e) {
+  //   // console.log(this.state);
+  //   SM.play('test');
+  // }
+
+  play(song) {
+    // console.log(this.state.play);
+    !this.state.play ? SM.play(song) : SM.pause(song);
+    this.setState({ play: !this.state.play });
+  }
+
+  stop(song) {
+    SM.stop(song);
+  }
+
+  volume = vol => {
+    this.setState({
+      vol,
+    });
+    SM.setVolume('test',vol)
+  }
+
   // render
   render() {
     // console.log(window.p5.SoundFile);
@@ -61,9 +72,11 @@ class App extends Component {
       <div className="App">
         <Nav />
         <Turntable
-          scratch={this.scratch}
+          // scratch={this.scratch}
           play={this.play}
           stop={this.stop}
+          vol={this.state.vol}
+          volume={this.volume}
         />
         <End />
       </div>

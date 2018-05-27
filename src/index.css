@@ -144,3 +144,7 @@
 .stop::before{
   content:"Stop";
 }
+
+.volume-slider{
+  background:blue;
+}

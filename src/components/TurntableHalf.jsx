@@ -21,7 +21,10 @@ export default function TurntableHalf(props) {
       </div>
       <div className="tb-knobs">
         <EQ />
-        <Sliders />
+        <Sliders
+          vol={props.vol}
+          volume={props.volume}
+        />
       </div>
     </section>
   );
