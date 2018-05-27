@@ -19,13 +19,17 @@ class App extends Component {
       play: false,
       value: 10,
       // stop: false,
-      vol: 50,
+      vol: {
+        v1: 50,
+        v2: 50,
+      },
     };
 
     // bindings
     // this.scratch = this.scratch.bind(this);
     this.play = this.play.bind(this);
     this.stop = this.stop.bind(this);
+    this.volume = this.volume.bind(this);
   }
 
   // component will mount initialization
@@ -36,6 +40,10 @@ class App extends Component {
           SM.createSound({
             id: 'test',
             url: 'https://freesound.org/data/previews/354/354026_6567189-lq.ogg',
+          });
+          SM.createSound({
+            id: 'synth',
+            url: 'https://freesound.org/data/previews/429/429953_2731495-lq.ogg',
           });
         },
       }),
@@ -58,12 +66,28 @@ class App extends Component {
     SM.stop(song);
   }
 
-  volume = vol => {
+  volume(vol, song, side) {
     this.setState({
-      vol,
+      vol: {
+        v1: this.state.vol.v1,
+        v2: this.state.vol.v2,
+        [side]: vol,
+      },
     });
-    SM.setVolume('test',vol)
+    console.log(this.state);
+    console.log(vol);
+    console.log(song);
+    console.log(side);
+    SM.setVolume(song, vol);
   }
+
+  // crossfade = (cfade1, cfade2) => {
+  //   this.setState({
+  //     cfade1,
+  //     cfade2
+  //   })
+  //   SM.setVolume()
+  // }
 
   // render
   render() {

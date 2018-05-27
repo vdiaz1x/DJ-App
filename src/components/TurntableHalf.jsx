@@ -15,6 +15,7 @@ export default function TurntableHalf(props) {
           scratch={props.scratch}
         />
         <DrumPads
+          side={props.side}
           play={props.play}
           stop={props.stop}
         />
@@ -22,6 +23,7 @@ export default function TurntableHalf(props) {
       <div className="tb-knobs">
         <EQ />
         <Sliders
+          side={props.side}
           vol={props.vol}
           volume={props.volume}
         />

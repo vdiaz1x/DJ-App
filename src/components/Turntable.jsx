@@ -10,7 +10,7 @@ export default function Turntable(props) {
         scratch={props.scratch}
         play={props.play}
         stop={props.stop}
-        vol={props.vol}
+        vol={props.vol.v1}
         volume={props.volume}
         side="tb-left"
       />
@@ -18,9 +18,9 @@ export default function Turntable(props) {
         scratch={props.scratch}
         play={props.play}
         stop={props.stop}
-        vol={props.vol}
+        vol={props.vol.v2}
         volume={props.volume}
-        side="tb-left"
+        side="tb-right"
       />
       <Crossfader />
     </section>
