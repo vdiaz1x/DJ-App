@@ -4,7 +4,7 @@ import TurntableHalf from './TurntableHalf';
 import Crossfader from './Crossfader';
 
 export default function Turntable(props) {
-  console.log(props.songs);
+  // console.log(props.songs);
   return (
     <section className="turntable">
       <TurntableHalf

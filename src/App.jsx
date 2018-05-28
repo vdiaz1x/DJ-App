@@ -16,8 +16,48 @@ class App extends Component {
   constructor(props) {
     super(props);
 
+    // creates new audio context for the web audio API to work
+    const AC = new (window.AudioContext || window.webkitAudioContext)();
+
+    // creates gain nodes
+    const gainNode1 = AC.createGain();
+    const gainNode2 = AC.createGain();
+
+    // creates delay nodes
+    const delayNode1 = AC.createDelay(3);
+
+    // creates biquad filter nodes
+    let biquadFilter1 = AC.createBiquadFilter();
+
+    // creating new audio objects
     const t = new Audio(test);
     const r = new Audio(rebellion);
+
+    // converting the audio objects into a media source to be manipulated by the web audio API
+    const source1 = AC.createMediaElementSource(t);
+    const source2 = AC.createMediaElementSource(r);
+
+    // connecting the gainNode to change volume
+    source1.connect(gainNode1);
+    source2.connect(gainNode2);
+
+    // testing gain
+    gainNode1.gain.setValueAtTime(1, AC.currentTime);
+    // gainNode2.gain.setValueAtTime(0.1, AC.currentTime);
+
+    // connecting the delayNode to add delay effect
+    gainNode1.connect(delayNode1);
+
+    // testing delay
+    delayNode1.delayTime.setValueAtTime(3, AC.currentTime);
+    console.log(delayNode1.delayTime);
+
+    // adding destination so sound can be played
+    // gainNode1.connect(AC.destination);
+    // gainNode2.connect(AC.destination);
+
+    delayNode1.connect(AC.destination);
+    source1.connect(AC.destination);
 
     this.state = {
       songs: {

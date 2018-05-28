@@ -7,7 +7,7 @@ import EQ from '../parts/EQ';
 import Sliders from '../parts/Sliders';
 
 export default function TurntableHalf(props) {
-  console.log(props.songs);
+  // console.log(props.songs);
   return (
     <section className={`tb-half ${props.side}`}>
       <div className="tb-disc">

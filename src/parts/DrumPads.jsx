@@ -3,7 +3,7 @@ import React from 'react';
 export default function DrumPads(props) {
   // console.log(props);
   const song = props.side === 'tb-left' ? 't' : 'r';
-  console.log(props.songs[song]);
+  // console.log(props.songs[song]);
 
   return (
     <section className="drum-pads">
