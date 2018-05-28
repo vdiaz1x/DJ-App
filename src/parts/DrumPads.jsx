@@ -7,8 +7,20 @@ export default function DrumPads(props) {
   return (
     <section className="drum-pads">
       <h1>THIS IS THE DRUM PADS</h1>
-      <div className="play" onClick={() => props.play(song)} />
-      <div className="stop" onClick={() => props.stop(song)} />
+      <div
+className="play"
+onClick={
+        console.log('here')
+        // () => props.play(song)
+      }
+      />
+      <div
+className="stop"
+onClick={
+        console.log('here')
+        // () => props.stop(song)
+      }
+      />
     </section>
   );
 }

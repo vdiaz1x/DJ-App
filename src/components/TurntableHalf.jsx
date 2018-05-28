@@ -13,23 +13,23 @@ export default function TurntableHalf(props) {
       <div className="tb-disc">
         <FX />
         <Vinyl
-          scratch={props.scratch}
-          runtime={props.runtime}
-          rtime={props.rtime}
-          dur={props.dur}
+          // scratch={props.scratch}
+          // runtime={props.runtime}
+          // rtime={props.rtime}
+          // dur={props.dur}
         />
         <DrumPads
-          side={props.side}
-          play={props.play}
-          stop={props.stop}
+          // side={props.side}
+          // play={props.play}
+          // stop={props.stop}
         />
       </div>
       <div className="tb-knobs">
         <EQ />
         <Sliders
-          side={props.side}
-          vol={props.vol}
-          volume={props.volume}
+          // side={props.side}
+          // vol={props.vol}
+          // volume={props.volume}
         />
       </div>
     </section>
