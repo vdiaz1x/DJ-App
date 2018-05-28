@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 
 // importing utilities
-import song from './test.mp3';
+import test from './test.mp3';
+import rebellion from './rebellion.mp3';
 // import Sound from 'soundmanager2';
 
 // importing components
@@ -15,9 +16,18 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    const sound = new Audio(song);
+    const t = new Audio(test);
+    const r = new Audio(rebellion);
+
+    this.state = {
+      songs: {
+        t,
+        r,
+      },
+      play: false,
+    };
     // sound.play();
-    console.log(sound);
+    // console.log(sound);
     // this.state = {
     //   SM: {},
     //   vol: {
@@ -37,8 +47,8 @@ class App extends Component {
 
     // bindings
     // this.scratch = this.scratch.bind(this);
-    // this.play = this.play.bind(this);
-    // this.stop = this.stop.bind(this);
+    this.playSong = this.playSong.bind(this);
+    this.stopSong = this.stopSong.bind(this);
     // this.volume = this.volume.bind(this);
     // this.crossfade = this.crossfade.bind(this);
     // this.runtime = this.runtime.bind(this);
@@ -76,35 +86,25 @@ class App extends Component {
 
   // // plays song/pauses song (depending on if song is alredy playing
   // // takes song id as parameter
-  // play(song) {
-  //   // console.log(this.state.play);
-  //   SM.togglePause(song);
+  playSong(song) {
+    // toggles between play and pause depending on state
+    !this.state.play ? song.play() : song.pause();
+    // sets state to opposite
+    this.setState({ play: !this.state.play });
 
-  //   let d1 = (SM.getSoundById('test').duration / 1000);
-  //   d1 = d1.toFixed(2);
-
-  //   let d2 = (SM.getSoundById('synth').duration);
-  //   d2 = d2.toFixed(2);
-  //   // console.log('THIS IS DURATION', d1);
-
-  //   // let rt1 = (SM.getSoundById('test').position / 1000);
-  //   // rt1 = rt1.toFixed(2);
-
-  //   this.setState({
-  //     // rtime: {
-  //     //   rt1,
-  //     // },
-  //     dur: {
-  //       d1,
-  //       d2,
-  //     },
-  //   });
-  // }
+    console.log((song.duration / 60).toFixed(2));
+  }
 
   // // stops song, reset playtime to beginning
-  // stop(song) {
-  //   SM.stop(song);
-  // }
+  stopSong(song) {
+    // no native stop in web audio apparently
+    // pauses song
+    song.pause();
+    // makes current runtime to zero, effectively starting the song over
+    song.currentTime = 0;
+    // resets play state so play button works as intended
+    this.setState({ play: false });
+  }
 
   // // sets the volume of the song playing
   // // takes volume number (value of slider), song id, and right/left side as parameters
@@ -183,7 +183,18 @@ class App extends Component {
     return (
       <div className="App">
         <Nav />
-        <Turntable />
+        <Turntable
+          songs={this.state.songs}
+          play={this.playSong}
+          stop={this.stopSong}
+          // vol={this.state.vol}
+          // volume={this.volume}
+          // cfade={this.state.cfade}
+          // crossfade={this.crossfade}
+          // runtime={this.runtime}
+          // rtime={this.state.rtime}
+          // dur={this.state.dur}
+        />
         <End />
       </div>
     );

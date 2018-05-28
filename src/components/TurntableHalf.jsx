@@ -7,30 +7,22 @@ import EQ from '../parts/EQ';
 import Sliders from '../parts/Sliders';
 
 export default function TurntableHalf(props) {
-  // console.log(props.dur);
+  console.log(props.songs);
   return (
     <section className={`tb-half ${props.side}`}>
       <div className="tb-disc">
         <FX />
-        <Vinyl
-          // scratch={props.scratch}
-          // runtime={props.runtime}
-          // rtime={props.rtime}
-          // dur={props.dur}
-        />
+        <Vinyl />
         <DrumPads
-          // side={props.side}
-          // play={props.play}
-          // stop={props.stop}
+          side={props.side}
+          songs={props.songs}
+          play={props.play}
+          stop={props.stop}
         />
       </div>
       <div className="tb-knobs">
         <EQ />
-        <Sliders
-          // side={props.side}
-          // vol={props.vol}
-          // volume={props.volume}
-        />
+        <Sliders />
       </div>
     </section>
   );
