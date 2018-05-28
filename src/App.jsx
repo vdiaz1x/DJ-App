@@ -27,7 +27,10 @@ class App extends Component {
     const delayNode1 = AC.createDelay(3);
 
     // creates biquad filter nodes
-    let biquadFilter1 = AC.createBiquadFilter();
+    const highShelf1 = AC.createBiquadFilter();
+    const lowShelf1 = AC.createBiquadFilter();
+    const highPass1 = AC.createBiquadFilter();
+    const lowPass1 = AC.createBiquadFilter();
 
     // creating new audio objects
     const t = new Audio(test);
@@ -42,22 +45,40 @@ class App extends Component {
     source2.connect(gainNode2);
 
     // testing gain
-    gainNode1.gain.setValueAtTime(1, AC.currentTime);
+    // gainNode1.gain.setValueAtTime(1, AC.currentTime);
     // gainNode2.gain.setValueAtTime(0.1, AC.currentTime);
 
     // connecting the delayNode to add delay effect
     gainNode1.connect(delayNode1);
 
     // testing delay
-    delayNode1.delayTime.setValueAtTime(3, AC.currentTime);
-    console.log(delayNode1.delayTime);
+    // delayNode1.delayTime.setValueAtTime(3, AC.currentTime);
+    // console.log(delayNode1.delayTime);
+
+    // connecting the biquadFilterNode to add filter effects
+    delayNode1.connect(highShelf1);
+    highShelf1.connect(lowShelf1);
+
+    // testing biquad filter
+    highShelf1.type = 'highshelf';
+    // highShelf1.frequency.setValueAtTime(1000, AC.currentTime);
+    // highShelf1.gain.setValueAtTime(20, AC.currentTime);
+    highShelf1.frequency.value = 4700;
+    highShelf1.gain.value = 1git0;
+
+    lowShelf1.type = 'lowshelf';
+    // lowShelf1.frequency.setValueAtTime(1000, AC.currentTime);
+    // lowShelf1.gain.setValueAtTime(20, AC.currentTime);
+    lowShelf1.frequency.value = 35;
+    lowShelf1.gain.value = 10;
 
     // adding destination so sound can be played
     // gainNode1.connect(AC.destination);
     // gainNode2.connect(AC.destination);
 
-    delayNode1.connect(AC.destination);
-    source1.connect(AC.destination);
+    // delayNode1.connect(AC.destination);
+    // source1.connect(AC.destination);
+    lowShelf1.connect(AC.destination);
 
     this.state = {
       songs: {
