@@ -8,17 +8,18 @@ export default function Sliders(props) {
   const leftRight = props.side === 'tb-left';
   const song = leftRight ? 'test' : 'synth';
   const side = leftRight ? 'v1' : 'v2';
-  const value = props.vol;
+  const { vol } = props;
+
   return (
     <section className="sliders">
       <Slider
         className="volume-slider"
         min={0}
         max={100}
-        value={value}
+        value={vol}
         tooltip={false}
         // orientation="vertical"
-        onChange={value => props.volume(value, song, side)}
+        onChange={vol => props.volume(vol, song, side)}
       />
     </section>
   );

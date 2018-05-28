@@ -21,6 +21,14 @@ class App extends Component {
         v2: 50,
       },
       cfade: 0,
+      rtime: {
+        rt1: 0,
+        rt2: 0,
+      },
+      dur: {
+        d1: 0,
+        d2: 0,
+      },
     };
 
     // bindings
@@ -29,6 +37,7 @@ class App extends Component {
     this.stop = this.stop.bind(this);
     this.volume = this.volume.bind(this);
     this.crossfade = this.crossfade.bind(this);
+    this.runtime = this.runtime.bind(this);
   }
 
   // component will mount initialization
@@ -66,6 +75,26 @@ class App extends Component {
   play(song) {
     // console.log(this.state.play);
     SM.togglePause(song);
+
+    let d1 = (SM.getSoundById('test').duration / 1000);
+    d1 = d1.toFixed(2);
+
+    let d2 = (SM.getSoundById('synth').duration);
+    d2 = d2.toFixed(2);
+    // console.log('THIS IS DURATION', d1);
+
+    // let rt1 = (SM.getSoundById('test').position / 1000);
+    // rt1 = rt1.toFixed(2);
+
+    this.setState({
+      // rtime: {
+      //   rt1,
+      // },
+      dur: {
+        d1,
+        d2,
+      },
+    });
   }
 
   // stops song, reset playtime to beginning
@@ -89,6 +118,7 @@ class App extends Component {
 
     // setting the volume of the song by the id
     SM.setVolume(song, vol);
+    // console.log('POSITION', SM.getSoundById(song).position);
   }
 
   // this crossfades the two songs (which song is playing at any given time)
@@ -122,6 +152,27 @@ class App extends Component {
     SM.setVolume('synth', v2);
   }
 
+  runtime(rtime, song, side) {
+    const rt1 = (SM.getSoundById('test').position);
+    const rt2 = (SM.getSoundById('synth').position);
+    // rt1 = rt1.toFixed(2);
+
+    // console.log(rtime);
+
+    // rt1 = rt1 === 0 ? SM.getSoundById('test').duration : rt1;
+
+    this.setState({
+      rtime: {
+        rt1: this.state.rtime.rt1,
+        rt2: this.state.rtime.rt2,
+        [side]: rt2,
+      },
+    });
+    SM.getSoundById(song).setPosition(rtime);
+    console.log(song, side);
+    console.log(rtime);
+  }
+
   // render
   render() {
     // console.log(window.p5.SoundFile);
@@ -136,6 +187,9 @@ class App extends Component {
           volume={this.volume}
           cfade={this.state.cfade}
           crossfade={this.crossfade}
+          runtime={this.runtime}
+          rtime={this.state.rtime}
+          dur={this.state.dur}
         />
         <End />
       </div>
