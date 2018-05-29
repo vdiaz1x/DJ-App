@@ -10,7 +10,7 @@ export default function Crossfader(props) {
   return (
     <section className="crossfader">
       <Slider
-        min={0}
+        min={-100}
         max={100}
         value={cfade}
         tooltip={false}

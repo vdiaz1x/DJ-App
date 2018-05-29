@@ -16,7 +16,7 @@ export default function Sliders(props) {
       <Slider
         className="volume-slider"
         min={0}
-        max={100}
+        max={200}
         value={vol}
         tooltip={false}
         // orientation="vertical"

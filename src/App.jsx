@@ -36,8 +36,8 @@ class App extends Component {
 
     // creates delay nodes
     // add the delay upper limit as param (in seconds)
-    const delayNode1 = AC.createDelay(3);
-    const delayNode2 = AC.createDelay(3);
+    const delayNode1 = AC.createDelay();
+    const delayNode2 = AC.createDelay();
 
     // creates biquad filter nodes
     const highShelf1 = AC.createBiquadFilter();
@@ -78,8 +78,8 @@ class App extends Component {
     source2.connect(gainNode2);
 
     // connecting the delayNode to add delay effect
-    gainNode1.connect(delayNode1);
-    gainNode2.connect(delayNode2);
+    // gainNode1.connect(delayNode1);
+    // gainNode2.connect(delayNode2);
 
     // connecting the biquadFilterNode to add filter effects
     // delayNode1.connect(highPass1).connect(lowPass1).connect(highShelf1).connect(lowShelf1);
@@ -91,8 +91,8 @@ class App extends Component {
 
     // lowShelf1.connect(AC.destination);
     // lowShelf2.connect(AC.destination);
-    delayNode1.connect(AC.destination);
-    delayNode2.connect(AC.destination);
+    gainNode1.connect(AC.destination);
+    gainNode2.connect(AC.destination);
     // source2.connect(AC.destination);
     // gainNode2.connect(AC.destination);
 
@@ -103,12 +103,12 @@ class App extends Component {
     */
 
     // testing gain
-    gainNode1.gain.setValueAtTime(1, AC.currentTime);
-    gainNode2.gain.setValueAtTime(1, AC.currentTime);
+    // gainNode1.gain.setValueAtTime(1, AC.currentTime);
+    // gainNode2.gain.setValueAtTime(1, AC.currentTime);
 
     // testing delay
-    delayNode1.delayTime.setValueAtTime(0, AC.currentTime);
-    delayNode2.delayTime.setValueAtTime(0, AC.currentTime);
+    // delayNode1.delayTime.setValueAtTime(0, AC.currentTime);
+    // delayNode2.delayTime.setValueAtTime(0, AC.currentTime);
 
     // console.log(delayNode1.delayTime);
 
@@ -137,24 +137,32 @@ class App extends Component {
     */
 
     this.state = {
+      // Web Audio API Contet
       AC,
+      // songs on deck
       songs: {
         left: t,
         right: r,
       },
+      // gain node to change gain
       source: {
         left: gainNode1,
         right: gainNode2,
       },
+      // initial play state
       play: false,
+      // initial volume state
+      // volume starts at 100%, can gain up to 200%
       vol: {
-        left: 50,
-        right: 50,
+        left: 100,
+        right: 100,
       },
-      cfade: 50,
+      // initial crossfade state
+      // 0 is the center (both songs)
+      // -100 is the left song and 100 is the right song
+      cfade: 0,
     };
-    // sound.play();
-    // console.log(sound);
+
     // this.state = {
     //   SM: {},
     //
@@ -217,7 +225,8 @@ class App extends Component {
   // // takes volume number (value of slider), song id, and right/left side as parameters
   volume(vol, song, side) {
     // setting both the volume values for later use
-    console.log(vol);
+    // console.log(vol);
+
 
     this.setState({
       vol: {
@@ -230,29 +239,27 @@ class App extends Component {
     });
 
     // setting the volume of the song by the id
-    // console.log(vol);
+    console.log(vol);
     // console.log('VOLUME AUDIO', song.volume);
     // song.volume = vol / 100;
-    // console.log('VOLUME AUDIO STATE', this.state.vol[side]);
-    // console.log('GAIN', this.state.source[side].gain);
+    console.log('VOLUME AUDIO STATE', this.state.vol[side]);
+    console.log('GAIN', this.state.source[side].gain);
 
     // sets the gain to the value of the volume slider
     // gain starts at 100% (full volume)
     // can increase to 200% of its value
-    this.state.source[side].gain.setValueAtTime(vol / 100 * 5, this.state.AC.currentTime);
+    this.state.source[side].gain.setValueAtTime(vol / 100, this.state.AC.currentTime);
   }
 
   // // this crossfades the two songs (which song is playing at any given time)
   // // takes the crossfade number (value of slider) as parameter
-  // // the slider value goes from -100 to 100
-  // // when cf value is zero, both songs play. at -100, only the left song plays, when 100, only the right song plays
+  // // the slider value goes from 0 to 100
+  // // when cf value is zero, both songs play. at 0, only the left song plays, when 100, only the right song plays
   crossfade(cfade) {
   //   // setting the crossfade value for later use
     this.setState({
       cfade,
     });
-
-    // console.log('CROSSFADE');
     // console.log(this.state);
 
     // normalizing the crossfade
@@ -261,23 +268,33 @@ class App extends Component {
     // const cf1 = this.state.cfade > 0 ? 100 - cfade : 100;
     // const cf2 = this.state.cfade < 0 ? 100 + cfade : 100;
 
-    const cf1 = Math.log10(cfade);
-    const cf2 = Math.log10(cfade);
+    const cf1 = this.state.cfade > 0 ? 100 - cfade : 100;
+    const cf2 = this.state.cfade < 0 ? 100 + cfade : 100;
+
+    // const cf1 = Math.log10(cfade);
+    // const cf2 = Math.log10(cfade);
 
     // normalizing the volume so the cf value doesn't reset the volume level
     // sets the ratio of the cf values above to the volume levels for the songs as new volume levels for those songs
-    const v1 = 100-(cf1 * this.state.vol.left);
-    const v2 = (cf2 * this.state.vol.right);
+    const v1 = (1 - (cf1 * this.state.vol.left)) / 10000;
+    const v2 = (cf2 * this.state.vol.right) / 10000;
 
-    console.log('CF1', cf1);
-    console.log('CF2', cf2);
+    // console.log("LOG",(+this.state.vol.left * (1 - (Math.log(+cf1) / Math.log(0.5)))) / 100)
+
+    // const v1 = (+this.state.vol.left * (1 - (Math.log(+this.state.cfade) / Math.log(0.5)))) / 100
+    // const v2 = (+this.state.vol.left * (1 - (Math.log(+this.state.cfade) / Math.log(0.5)))) / 100
+
+    console.log('CROSSFADE', cfade);
+
+    // console.log('CF1', cf1);
+    // console.log('CF2', cf2);
     console.log('V1', v1);
     console.log('V2', v2);
 
     // sets the volume of the songs for crossfading
     // this.state.songs.left.vol = v1;
-    this.state.source.left.gain.setValueAtTime(v1 * 2, this.state.AC.currentTime);
-    this.state.source.right.gain.setValueAtTime(v2 * 2, this.state.AC.currentTime);
+    this.state.source.left.gain.setValueAtTime(v1, this.state.AC.currentTime);
+    this.state.source.right.gain.setValueAtTime(v2, this.state.AC.currentTime);
     // this.volume(v1, this.state.songs.left, 'left');
   }
 
