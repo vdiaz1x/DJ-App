@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function DrumPads(props) {
-  // console.log(props);
+  // console.log(props.side);
   // const song = props.side === 'tb-left' ? 'left' : 'right';
   // console.log(props.songs[song]);
 

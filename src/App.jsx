@@ -186,6 +186,7 @@ class App extends Component {
     */
 
     // bindings
+    // this.stateSet = this.stateSet.bind(this);
     // this.scratch = this.scratch.bind(this);
     this.playSong = this.playSong.bind(this);
     this.stopSong = this.stopSong.bind(this);
@@ -195,66 +196,77 @@ class App extends Component {
   }
 
   // // functions
+
+  stateSet(parameter, side, value) {
+    this.setState({
+      [parameter]: {
+        // set to ensure both parameter states exist
+        left: this.state[parameter].left,
+        right: this.state[parameter].right,
+        // setting the value of the changed side's state that is actually being changed
+        [side]: value,
+      },
+    });
+
+    console.log(this.state[parameter]);
+  }
   // // scratch(e) {
   // //   // console.log(this.state);
   // //   SM.play('test');
   // // }
 
-  // // plays song/pauses song (depending on if song is alredy playing
-  // // takes song id as parameter
+  // plays song/pauses song (depending on if song is alredy playing
+  // takes song id as parameter
   playSong(song, side) {
-    console.log(this.state.play);
-
     // toggles between play and pause depending on state
     !this.state.play[side] ? song.play() : song.pause();
     // sets state to opposite
-    this.setState({
-      play: {
-        left: this.state.play.left,
-        right: this.state.play.right,
-        [side]: !this.state.play[side],
-      },
-    });
-    // console.log(song);
-
-
-    // console.log((song.duration / 60).toFixed(2));
+    // this.setState({
+    //   play: {
+    //     // set to ensure both play states exist
+    //     left: this.state.play.left,
+    //     right: this.state.play.right,
+    //     // setting the value of the play state that is actually being changed
+    //     [side]: !this.state.play[side],
+    //   },
+    // });
+    this.stateSet('play', side, !this.state.play[side]);
   }
 
   // // stops song, reset playtime to beginning
-  stopSong(song) {
+  stopSong(song, side) {
     // no native stop in web audio apparently
     // pauses song
     song.pause();
     // makes current runtime to zero, effectively starting the song over
     song.currentTime = 0;
     // resets play state so play button works as intended
-    this.setState({ play: false });
+    // this.setState({
+    //   play: {
+    //     // set to ensure both play states exist
+    //     left: this.state.play.left,
+    //     right: this.state.play.right,
+    //     // setting the value of the play state that is actually being changed
+    //     [side]: false,
+    //   },
+    // });
+    this.stateSet('play', side, false);
   }
 
-  // // sets the volume of the song playing
-  // // takes volume number (value of slider), song id, and right/left side as parameters
+  // sets the volume of the song playing
+  // takes volume number (value of slider), song id, and right/left side as parameters
   volume(vol, song, side) {
     // setting both the volume values for later use
-    // console.log(vol);
-
-
-    this.setState({
-      vol: {
-        // set to ensure both volumes exist
-        left: this.state.vol.left,
-        right: this.state.vol.right,
-        // setting the value of the song that is actually being changed
-        [side]: vol,
-      },
-    });
-
-    // setting the volume of the song by the id
-    console.log(vol);
-    // console.log('VOLUME AUDIO', song.volume);
-    // song.volume = vol / 100;
-    console.log('VOLUME AUDIO STATE', this.state.vol[side]);
-    console.log('GAIN', this.state.source[side].gain);
+    // this.setState({
+    //   vol: {
+    //     // set to ensure both volumes exist
+    //     left: this.state.vol.left,
+    //     right: this.state.vol.right,
+    //     // setting the value of the song that is actually being changed
+    //     [side]: vol,
+    //   },
+    // });
+    this.stateSet('vol', side, vol);
 
     // sets the gain to the value of the volume slider
     // gain starts at 100% (full volume)
@@ -271,7 +283,6 @@ class App extends Component {
     this.setState({
       cfade,
     });
-    // console.log(this.state);
 
     // normalizing the crossfade
     // when cf value is below zero, cf2 decrements, cf1 stays at 100

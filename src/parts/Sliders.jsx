@@ -5,9 +5,9 @@ import 'react-rangeslider/lib/index.css';
 
 
 export default function Sliders(props) {
-  const leftRight = props.side === 'tb-left';
+  // const leftRight = props.side === 'tb-left';
   // const song = leftRight ? 'left' : 'right';
-  const side = leftRight ? 'left' : 'right';
+  // const side = leftRight ? 'left' : 'right';
   const { vol } = props;
   // console.log(props.songs);
 
@@ -20,7 +20,7 @@ export default function Sliders(props) {
         value={vol}
         tooltip={false}
         // orientation="vertical"
-        onChange={vol => props.volume(vol, props.songs, side)}
+        onChange={vol => props.volume(vol, props.songs, props.side)}
       />
     </section>
   );
