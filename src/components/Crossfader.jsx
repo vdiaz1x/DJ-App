@@ -4,17 +4,17 @@ import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 
 export default function Crossfader(props) {
-  // const cf = props.cfade;
+  const { cfade } = props;
   // const cf2 = props.cfade.cf2;
   // console.log('CF', cf);
   return (
     <section className="crossfader">
       <Slider
-        min={-100}
+        min={0}
         max={100}
-        // value={cf}
+        value={cfade}
         tooltip={false}
-        // onChange={cf => props.crossfade(cf)}
+        onChange={cfade => props.crossfade(cfade)}
       />
     </section>
   );

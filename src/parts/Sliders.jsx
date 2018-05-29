@@ -5,10 +5,11 @@ import 'react-rangeslider/lib/index.css';
 
 
 export default function Sliders(props) {
-  // const leftRight = props.side === 'tb-left';
-  // const song = leftRight ? 'test' : 'synth';
-  // const side = leftRight ? 'v1' : 'v2';
-  // const { vol } = props;
+  const leftRight = props.side === 'tb-left';
+  // const song = leftRight ? 'left' : 'right';
+  const side = leftRight ? 'left' : 'right';
+  const { vol } = props;
+  // console.log(props.songs);
 
   return (
     <section className="sliders">
@@ -16,10 +17,10 @@ export default function Sliders(props) {
         className="volume-slider"
         min={0}
         max={100}
-        // value={vol}
+        value={vol}
         tooltip={false}
         // orientation="vertical"
-        // onChange={vol => props.volume(vol, song, side)}
+        onChange={vol => props.volume(vol, props.songs, side)}
       />
     </section>
   );

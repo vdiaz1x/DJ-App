@@ -1,5 +1,6 @@
 # DJ App
-A dj app for single use and two player collabs
+<!-- A dj app for single use and two player collabs -->
+A DJ App with functional turntables and EQ/FX/Crossfader for aspiring DJs and for collaborative DJ activities (coming soon!) using React for front end and Ruby on Rails for back end (back end tentative)
 
 # Project Overview
 
@@ -38,7 +39,7 @@ This project is based off of a DJ's turntable/controller. It will attempt to rep
 - User Auth
 - User Music Storage
 
-## Low Priority
+### Low Priority
 - Adding Sound Clips for Sample Deck
 - Beatmatching and Other Advanced DJ Features
 - Add PostMVP Features

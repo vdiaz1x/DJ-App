@@ -9,29 +9,32 @@ export default function Turntable(props) {
     <section className="turntable">
       <TurntableHalf
         side="tb-left"
-        // scratch={props.scratch}
-        songs={props.songs}
+        songs={props.songs.left}
         play={props.play}
         stop={props.stop}
-        // vol={props.vol.v1}
-        // volume={props.volume}
+        vol={props.vol.left}
+        volume={props.volume}
         // runtime={props.runtime}
         // rtime={props.rtime.rt1}
         // dur={props.dur.d1}
+        // scratch={props.scratch}
       />
       <TurntableHalf
         side="tb-right"
-        // scratch={props.scratch}
-        songs={props.songs}
+        songs={props.songs.right}
         play={props.play}
         stop={props.stop}
-        // vol={props.vol.v2}
-        // volume={props.volume}
+        vol={props.vol.right}
+        volume={props.volume}
         // runtime={props.runtime}
         // rtime={props.rtime.rt2}
         // dur={props.dur.d2}
+        // scratch={props.scratch}
       />
-      <Crossfader />
+      <Crossfader
+        cfade={props.cfade}
+        crossfade={props.crossfade}
+      />
     </section>
   );
 }
