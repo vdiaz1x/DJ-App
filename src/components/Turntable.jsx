@@ -8,7 +8,7 @@ export default function Turntable(props) {
   return (
     <section className="turntable">
       <TurntableHalf
-        side="tb-left"
+        side="left"
         songs={props.songs.left}
         play={props.play}
         stop={props.stop}
@@ -20,7 +20,7 @@ export default function Turntable(props) {
         // scratch={props.scratch}
       />
       <TurntableHalf
-        side="tb-right"
+        side="right"
         songs={props.songs.right}
         play={props.play}
         stop={props.stop}

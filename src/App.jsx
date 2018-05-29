@@ -150,7 +150,10 @@ class App extends Component {
         right: gainNode2,
       },
       // initial play state
-      play: false,
+      play: {
+        left: false,
+        right: false,
+      },
       // initial volume state
       // volume starts at 100%, can gain up to 200%
       vol: {
@@ -199,11 +202,19 @@ class App extends Component {
 
   // // plays song/pauses song (depending on if song is alredy playing
   // // takes song id as parameter
-  playSong(song) {
+  playSong(song, side) {
+    console.log(this.state.play);
+
     // toggles between play and pause depending on state
-    !this.state.play ? song.play() : song.pause();
+    !this.state.play[side] ? song.play() : song.pause();
     // sets state to opposite
-    this.setState({ play: !this.state.play });
+    this.setState({
+      play: {
+        left: this.state.play.left,
+        right: this.state.play.right,
+        [side]: !this.state.play[side],
+      },
+    });
     // console.log(song);
 
 

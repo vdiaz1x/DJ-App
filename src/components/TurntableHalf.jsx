@@ -9,7 +9,7 @@ import Sliders from '../parts/Sliders';
 export default function TurntableHalf(props) {
   // console.log(props.songs);
   return (
-    <section className={`tb-half ${props.side}`}>
+    <section className={`tb-half tb-${props.side}`}>
       <div className="tb-disc">
         <FX />
         <Vinyl />
