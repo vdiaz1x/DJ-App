@@ -1,27 +1,50 @@
 import React from 'react';
 
 import Slider from 'react-rangeslider';
+import EQSlider from './EQSlider';
 
 export default function EQ(props) {
-// console.log(props.bq);
-const {hpass}=props.bq
-const {lpass}=props.bq
-const {bpass}=props.bq
+  const frequency = props.bq.hpass.frequency[props.side];
+  const Q = props.bq.hpass.Q[props.side];
+  const detune = props.bq.hpass.detune[props.side];
 
-const hpSide=hpass.freq[props.side]
+  // const frequency = props.bq.hpass.frequency[props.side];
+  // const Q = props.bq.hpass.Q[props.side];
+  // const detune = props.bq.hpass.detune[props.side];
 
-console.log(hpass);
+  // const frequency = props.bq.hpass.frequency[props.side];
+  // const Q = props.bq.hpass.Q[props.side];
+  // const detune = props.bq.hpass.detune[props.side];
 
   return (
     <section className="eq">
-      <div className="eq-slider slider-bar">
-        <Slider
-          min={4000}
+      <div className="eq-high">
+        <EQSlider
+          min={1000}
           max={6000}
-          orientation="vertical"
-          value={hpass.freq[props.side]}
-          tooltip={false}
-          onChange={(hpSide) => props.biquad("hpass", "freq", props.side, hpSide)}
+          filter="hpass"
+          param="frequency"
+          side={props.side}
+          biquad={props.biquad}
+          val={frequency}
+        />
+        <EQSlider
+          min={0}
+          max={12}
+          filter="hpass"
+          param="Q"
+          side={props.side}
+          biquad={props.biquad}
+          val={Q}
+        />
+        <EQSlider
+          min={0}
+          max={1000}
+          filter="hpass"
+          param="detune"
+          side={props.side}
+          biquad={props.biquad}
+          val={detune}
         />
       </div>
     </section>

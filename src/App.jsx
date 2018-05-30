@@ -95,8 +95,8 @@ class App extends Component {
 
     // adding destination so sound can be played
     highPass1.connect(AC.destination);
-    lowPass1.connect(AC.destination);
-    bandPass1.connect(AC.destination);
+    // lowPass1.connect(AC.destination);
+    // bandPass1.connect(AC.destination);
 
     /*
     |--------------------------------------------------------------------------
@@ -187,13 +187,13 @@ class App extends Component {
       cfade: 0,
       bq: {
         hpass: {
-          q: {
+          Q: {
             left: 0,
             right: 0,
           },
-          freq: {
-            left: 4000,
-            right: 4000,
+          frequency: {
+            left: 1000,
+            right: 1000,
           },
           detune: {
             left: 0,
@@ -201,11 +201,11 @@ class App extends Component {
           },
         },
         lpass: {
-          q: {
+          Q: {
             left: 0,
             right: 0,
           },
-          freq: {
+          frequency: {
             left: 250,
             right: 250,
           },
@@ -263,30 +263,28 @@ class App extends Component {
     });
   }
 
+  // sets the state based on the template for the biquad values in the state
   stateSetFilter(filter, parameter, side, value) {
-    // setting state
-    console.log(this.state.bq);
-    // console.log(this.state.bq);
-
+    // setting state for filters
     this.setState({
       // parameter for state object
       bq: {
+        // splatting the key:value pairs of bq inside the new state
         ...this.state.bq,
-        // "test":111,
         [filter]:{
+          // splatting the k:v pairs of the filter inside the new state
           ...this.state.bq[filter],
-          // "new":222,
           [parameter]:{
-            // check:333,
+            // splatting the l:v pairs of the parameter inside the new state
             ...this.state.bq[filter][parameter],
+            // setting the value of the side that actually changes
             [side]: value,
-
           }
         }
       },
     });
 
-    // console.log(this.state[parameter]);
+    console.log(value);
   }
 
   // plays song/pauses song (depending on if song is alredy playing
@@ -320,7 +318,7 @@ class App extends Component {
     this.state.gain[side].gain.setValueAtTime(vol / 100, this.state.AC.currentTime);
   }
 
-  // this crossfades the two songs (which song is playing at any given time)
+  // crossfades the two songs (which song is playing at any given time)
   // takes the cfade number (slider value) as parameter
   // the slider value goes from -100 to 100
   // when cfade value is zero, both songs play
@@ -366,8 +364,17 @@ class App extends Component {
     // this.volume(v1, this.state.songs.left, 'left');
   }
 
+  // changes the parameters of the varying filters
   biquad(filter, parameter, side, value) {
+    // setting the filter values for later use
     this.stateSetFilter(filter, parameter, side, value);
+    // sets the value of the filter
+    // console.log(this.state.hp.left.frequency.value =value);
+    console.log(this.state.hp[side])
+    console.log("Value",this.state.hp[side][parameter].value);
+
+    this.state.hp[side][parameter].value = value
+    // this.state.hp.left.setValueAtTime(value, this.state.AC.currentTime);
   }
 
   // runtime(rtime, song, side) {

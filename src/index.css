@@ -94,7 +94,7 @@
 
 .eq{
   height:50%;
-  border:1px solid white;
+  /* border:1px solid white; */
 }
 
 .sliders{
@@ -154,8 +154,15 @@
 
 /* sliders */
 
+.eq-high{
+  height:100%;
+  /* margin:0 10px; */
+  display:flex;
+  justify-content:space-around;
+}
+
 .eq-slider{
-  /* border:1px solid white; */
+  border:1px solid white;
   /* width:20%; */
   height:30%;
   /* padding:0 20px; */
