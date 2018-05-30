@@ -4,29 +4,29 @@ import Slider from 'react-rangeslider';
 import EQSlider from './EQSlider';
 
 export default function EQ(props) {
-  const frequency = props.bq.hpass.frequency[props.side];
-  const Q = props.bq.hpass.Q[props.side];
-  const detune = props.bq.hpass.detune[props.side];
+  const freq1 = props.bq.hpass.frequency[props.side];
+  const q1 = props.bq.hpass.Q[props.side];
+  const dt1 = props.bq.hpass.detune[props.side];
 
-  // const frequency = props.bq.hpass.frequency[props.side];
-  // const Q = props.bq.hpass.Q[props.side];
-  // const detune = props.bq.hpass.detune[props.side];
+  const freq2 = props.bq.bpass.frequency[props.side];
+  const q2 = props.bq.bpass.Q[props.side];
+  const dt2 = props.bq.bpass.detune[props.side];
 
-  // const frequency = props.bq.hpass.frequency[props.side];
-  // const Q = props.bq.hpass.Q[props.side];
-  // const detune = props.bq.hpass.detune[props.side];
+  const freq3 = props.bq.lpass.frequency[props.side];
+  const q3 = props.bq.lpass.Q[props.side];
+  const dt3 = props.bq.lpass.detune[props.side];
 
   return (
     <section className="eq">
-      <div className="eq-high">
+      <div className="eq-section highpass">
         <EQSlider
-          min={1000}
+          min={2000}
           max={6000}
           filter="hpass"
           param="frequency"
           side={props.side}
           biquad={props.biquad}
-          val={frequency}
+          val={freq1}
         />
         <EQSlider
           min={0}
@@ -35,7 +35,7 @@ export default function EQ(props) {
           param="Q"
           side={props.side}
           biquad={props.biquad}
-          val={Q}
+          val={q1}
         />
         <EQSlider
           min={0}
@@ -44,7 +44,67 @@ export default function EQ(props) {
           param="detune"
           side={props.side}
           biquad={props.biquad}
-          val={detune}
+          val={dt1}
+        />
+      </div>
+
+      <div className="eq-section bandpass">
+        <EQSlider
+          min={500}
+          max={3500}
+          filter="bpass"
+          param="frequency"
+          side={props.side}
+          biquad={props.biquad}
+          val={freq2}
+        />
+        <EQSlider
+          min={0}
+          max={12}
+          filter="bpass"
+          param="Q"
+          side={props.side}
+          biquad={props.biquad}
+          val={q2}
+        />
+        <EQSlider
+          min={0}
+          max={1000}
+          filter="bpass"
+          param="detune"
+          side={props.side}
+          biquad={props.biquad}
+          val={dt2}
+        />
+      </div>
+
+      <div className="eq-section lowpass">
+        <EQSlider
+          min={60}
+          max={400}
+          filter="lpass"
+          param="frequency"
+          side={props.side}
+          biquad={props.biquad}
+          val={freq3}
+        />
+        <EQSlider
+          min={0}
+          max={12}
+          filter="lpass"
+          param="Q"
+          side={props.side}
+          biquad={props.biquad}
+          val={q3}
+        />
+        <EQSlider
+          min={0}
+          max={1000}
+          filter="lpass"
+          param="detune"
+          side={props.side}
+          biquad={props.biquad}
+          val={dt3}
         />
       </div>
     </section>

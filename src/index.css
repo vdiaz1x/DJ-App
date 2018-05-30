@@ -154,8 +154,8 @@
 
 /* sliders */
 
-.eq-high{
-  height:100%;
+.eq-section{
+  height:33%;
   /* margin:0 10px; */
   display:flex;
   justify-content:space-around;
@@ -164,8 +164,20 @@
 .eq-slider{
   border:1px solid white;
   /* width:20%; */
-  height:30%;
+  /* height:30%; */
   /* padding:0 20px; */
+}
+
+.highpass{
+  background:rgba(255,0,0,.3)
+}
+
+.lowpass{
+  background:rgba(0,255,0,.3)
+}
+
+.bandpass{
+  background:rgba(0,0,255,.3)
 }
 
 /* range slider */

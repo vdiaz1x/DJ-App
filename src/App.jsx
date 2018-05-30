@@ -91,12 +91,20 @@ class App extends Component {
     gain1.connect(highPass1);
     gain1.connect(lowPass1);
     gain1.connect(bandPass1);
+
+    gain2.connect(highPass2);
+    gain2.connect(lowPass2);
+    gain2.connect(bandPass2);
     // delay2.connect(highShelf2).connect(lowShelf2).connect(bandPass2);
 
     // adding destination so sound can be played
     highPass1.connect(AC.destination);
-    // lowPass1.connect(AC.destination);
-    // bandPass1.connect(AC.destination);
+    lowPass1.connect(AC.destination);
+    bandPass1.connect(AC.destination);
+
+    highPass2.connect(AC.destination);
+    lowPass2.connect(AC.destination);
+    bandPass2.connect(AC.destination);
 
     /*
     |--------------------------------------------------------------------------
@@ -117,24 +125,33 @@ class App extends Component {
     // testing biquad filter
     // high pass
     highPass1.type = 'highpass';
-    highPass1.frequency.value = 4000;
+    highPass1.frequency.value = 1000;
     highPass1.Q.value = 1;
 
+    // band pass
+    bandPass1.type = 'bandpass';
+    bandPass1.frequency.value = 1600;
+    bandPass1.Q.value = 1;
+
+    // low pass
     lowPass1.type = 'lowpass';
     lowPass1.frequency.value = 250;
     lowPass1.Q.value = 1;
 
-    bandPass1.type = 'lowpass';
-    bandPass1.frequency.value = 1000;
-    bandPass1.Q.value = 1;
+    // high pass
+    highPass2.type = 'highpass';
+    highPass2.frequency.value = 1000;
+    highPass2.Q.value = 1;
 
-    // highPass2.type = 'highpass';
-    // highPass2.frequency.value = 4000;
-    // highPass2.Q.value = 1;
+    // band pass
+    bandPass2.type = 'bandpass';
+    bandPass2.frequency.value = 1600;
+    bandPass2.Q.value = 1;
 
-    // lowPass2.type = 'lowpass';
-    // lowPass2.frequency.value = 270;
-    // lowPass2.Q.value = 1;
+    // low pass
+    lowPass2.type = 'lowpass';
+    lowPass2.frequency.value = 250;
+    lowPass2.Q.value = 1;
 
     /*
     |--------------------------------------------------------------------------
@@ -156,17 +173,17 @@ class App extends Component {
         right: gain2,
       },
       // high pass node to change high pass
-      hp: {
+      hpass: {
         left: highPass1,
         right: highPass2,
       },
       // low pass node to change low pass
-      lp: {
+      lpass: {
         left: lowPass1,
         right: lowPass2,
       },
       // band pass node to change band pass (mid pass)
-      bp: {
+      bpass: {
         left: bandPass1,
         right: bandPass2,
       },
@@ -192,8 +209,22 @@ class App extends Component {
             right: 0,
           },
           frequency: {
-            left: 1000,
-            right: 1000,
+            left: 2000,
+            right: 2000,
+          },
+          detune: {
+            left: 0,
+            right: 0,
+          },
+        },
+        bpass: {
+          Q: {
+            left: 0,
+            right: 0,
+          },
+          frequency: {
+            left: 1600,
+            right: 1600,
           },
           detune: {
             left: 0,
@@ -370,11 +401,12 @@ class App extends Component {
     this.stateSetFilter(filter, parameter, side, value);
     // sets the value of the filter
     // console.log(this.state.hp.left.frequency.value =value);
-    console.log(this.state.hp[side])
-    console.log("Value",this.state.hp[side][parameter].value);
+    console.log(filter)
+    console.log(this.state[filter][side])
+    // console.log("Value",this.state.hp[side][parameter].value);
 
-    this.state.hp[side][parameter].value = value
-    // this.state.hp.left.setValueAtTime(value, this.state.AC.currentTime);
+    this.state[filter][side][parameter].value = value
+    // this.state.hp.left.setValueAtTime(value, this.state.ime);
   }
 
   // runtime(rtime, song, side) {
