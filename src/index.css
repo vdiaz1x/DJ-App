@@ -145,6 +145,22 @@
   content:"Stop";
 }
 
-.volume-slider{
-  background:blue;
+.slider-bar{
+  /* background:blue; */
+  border:1px solid white;
+  width:20%;
+  height:100%;
 }
+
+/* sliders */
+
+.eq-slider{
+  /* border:1px solid white; */
+  /* width:20%; */
+  height:30%;
+  /* padding:0 20px; */
+}
+
+/* range slider */
+.rangeslider__labels{width:0;height:0 !important;}
+.rangeslider-vertical{background:#444 !important;height:100% !important;margin:0 auto !important;}

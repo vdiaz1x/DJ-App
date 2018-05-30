@@ -14,6 +14,7 @@ export default function Turntable(props) {
         stop={props.stop}
         vol={props.vol.left}
         volume={props.volume}
+        biquad={props.biquad}
         // runtime={props.runtime}
         // rtime={props.rtime.rt1}
         // dur={props.dur.d1}
@@ -26,6 +27,7 @@ export default function Turntable(props) {
         stop={props.stop}
         vol={props.vol.right}
         volume={props.volume}
+        biquad={props.biquad}
         // runtime={props.runtime}
         // rtime={props.rtime.rt2}
         // dur={props.dur.d2}

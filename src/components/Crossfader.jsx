@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Slider from 'react-rangeslider';
-import 'react-rangeslider/lib/index.css';
+// import 'react-rangeslider/lib/index.css';
 
 export default function Crossfader(props) {
   const { cfade } = props;

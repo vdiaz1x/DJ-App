@@ -31,24 +31,26 @@ class App extends Component {
     */
 
     // creates gain nodes
-    const gainNode1 = AC.createGain();
-    const gainNode2 = AC.createGain();
+    const gain1 = AC.createGain();
+    const gain2 = AC.createGain();
 
     // creates delay nodes
     // add the delay upper limit as param (in seconds)
-    const delayNode1 = AC.createDelay();
-    const delayNode2 = AC.createDelay();
+    const delay1 = AC.createDelay();
+    const delay2 = AC.createDelay();
+
+    const delayGain1 = AC.createGain();
+    const delayGain2 = AC.createGain();
 
     // creates biquad filter nodes
-    const highShelf1 = AC.createBiquadFilter();
-    const lowShelf1 = AC.createBiquadFilter();
     const highPass1 = AC.createBiquadFilter();
+    // const hpGain1 = AC.createGain();
     const lowPass1 = AC.createBiquadFilter();
+    const bandPass1 = AC.createBiquadFilter();
 
-    const highShelf2 = AC.createBiquadFilter();
-    const lowShelf2 = AC.createBiquadFilter();
     const highPass2 = AC.createBiquadFilter();
     const lowPass2 = AC.createBiquadFilter();
+    const bandPass2 = AC.createBiquadFilter();
 
     /*
     |--------------------------------------------------------------------------
@@ -69,32 +71,32 @@ class App extends Component {
 
     /*
     |--------------------------------------------------------------------------
-    | Connecting all audio nodes
+    | Connecting All Audio Nodes
     |--------------------------------------------------------------------------
     */
 
     // connecting the gainNode to change volume
-    source1.connect(gainNode1);
-    source2.connect(gainNode2);
+    source1.connect(gain1);
+    source2.connect(gain2);
 
     // connecting the delayNode to add delay effect
-    // gainNode1.connect(delayNode1);
+    // gain1.connect(delay1);
     // gainNode2.connect(delayNode2);
 
+    // delay1.connect(delayGain1);
+    // delayGain1.connect(delay1);
+
     // connecting the biquadFilterNode to add filter effects
-    // delayNode1.connect(highPass1).connect(lowPass1).connect(highShelf1).connect(lowShelf1);
-    // delayNode2.connect(highShelf2).connect(lowShelf2).connect(highPass2).connect(lowPass2);
+    // gain1.connect(highPass1).connect(lowPass1).connect(bandPass1);
+    gain1.connect(highPass1);
+    gain1.connect(lowPass1);
+    gain1.connect(bandPass1);
+    // delay2.connect(highShelf2).connect(lowShelf2).connect(bandPass2);
 
     // adding destination so sound can be played
-    // lowPass1.connect(AC.destination);
-    // lowPass2.connect(AC.destination);
-
-    // lowShelf1.connect(AC.destination);
-    // lowShelf2.connect(AC.destination);
-    gainNode1.connect(AC.destination);
-    gainNode2.connect(AC.destination);
-    // source2.connect(AC.destination);
-    // gainNode2.connect(AC.destination);
+    highPass1.connect(AC.destination);
+    lowPass1.connect(AC.destination);
+    bandPass1.connect(AC.destination);
 
     /*
     |--------------------------------------------------------------------------
@@ -103,24 +105,28 @@ class App extends Component {
     */
 
     // testing gain
-    // gainNode1.gain.setValueAtTime(1, AC.currentTime);
+    // hpGain1.gain.setValueAtTime(100, AC.currentTime);
     // gainNode2.gain.setValueAtTime(1, AC.currentTime);
 
     // testing delay
-    // delayNode1.delayTime.setValueAtTime(0, AC.currentTime);
+    // delay1.delayTime.setValueAtTime(0, AC.currentTime);
     // delayNode2.delayTime.setValueAtTime(0, AC.currentTime);
 
     // console.log(delayNode1.delayTime);
 
     // testing biquad filter
     // high pass
-    // highPass1.type = 'highpass';
-    // highPass1.frequency.value = 4000;
-    // highPass1.Q.value = 1;
+    highPass1.type = 'highpass';
+    highPass1.frequency.value = 4000;
+    highPass1.Q.value = 1;
 
-    // lowPass1.type = 'lowpass';
-    // lowPass1.frequency.value = 270;
-    // lowPass1.Q.value = 1;
+    lowPass1.type = 'lowpass';
+    lowPass1.frequency.value = 250;
+    lowPass1.Q.value = 1;
+
+    bandPass1.type = 'lowpass';
+    bandPass1.frequency.value = 1000;
+    bandPass1.Q.value = 1;
 
     // highPass2.type = 'highpass';
     // highPass2.frequency.value = 4000;
@@ -145,9 +151,9 @@ class App extends Component {
         right: r,
       },
       // gain node to change gain
-      source: {
-        left: gainNode1,
-        right: gainNode2,
+      gain: {
+        left: gain1,
+        right: gain2,
       },
       // initial play state
       play: {
@@ -192,13 +198,16 @@ class App extends Component {
     this.stopSong = this.stopSong.bind(this);
     this.volume = this.volume.bind(this);
     this.crossfade = this.crossfade.bind(this);
+    this.biquad = this.biquad.bind(this);
     // this.runtime = this.runtime.bind(this);
   }
 
-  // // functions
-
+  // functions
+  // sets the state based on a template for state properties
   stateSet(parameter, side, value) {
+    // setting state
     this.setState({
+      // parameter for state object
       [parameter]: {
         // set to ensure both parameter states exist
         left: this.state[parameter].left,
@@ -210,10 +219,6 @@ class App extends Component {
 
     console.log(this.state[parameter]);
   }
-  // // scratch(e) {
-  // //   // console.log(this.state);
-  // //   SM.play('test');
-  // // }
 
   // plays song/pauses song (depending on if song is alredy playing
   // takes song id as parameter
@@ -221,19 +226,10 @@ class App extends Component {
     // toggles between play and pause depending on state
     !this.state.play[side] ? song.play() : song.pause();
     // sets state to opposite
-    // this.setState({
-    //   play: {
-    //     // set to ensure both play states exist
-    //     left: this.state.play.left,
-    //     right: this.state.play.right,
-    //     // setting the value of the play state that is actually being changed
-    //     [side]: !this.state.play[side],
-    //   },
-    // });
     this.stateSet('play', side, !this.state.play[side]);
   }
 
-  // // stops song, reset playtime to beginning
+  // stops song, reset playtime to beginning
   stopSong(song, side) {
     // no native stop in web audio apparently
     // pauses song
@@ -241,15 +237,6 @@ class App extends Component {
     // makes current runtime to zero, effectively starting the song over
     song.currentTime = 0;
     // resets play state so play button works as intended
-    // this.setState({
-    //   play: {
-    //     // set to ensure both play states exist
-    //     left: this.state.play.left,
-    //     right: this.state.play.right,
-    //     // setting the value of the play state that is actually being changed
-    //     [side]: false,
-    //   },
-    // });
     this.stateSet('play', side, false);
   }
 
@@ -257,29 +244,19 @@ class App extends Component {
   // takes volume number (value of slider), song id, and right/left side as parameters
   volume(vol, song, side) {
     // setting both the volume values for later use
-    // this.setState({
-    //   vol: {
-    //     // set to ensure both volumes exist
-    //     left: this.state.vol.left,
-    //     right: this.state.vol.right,
-    //     // setting the value of the song that is actually being changed
-    //     [side]: vol,
-    //   },
-    // });
     this.stateSet('vol', side, vol);
-
     // sets the gain to the value of the volume slider
     // gain starts at 100% (full volume)
     // can increase to 200% of its value
-    this.state.source[side].gain.setValueAtTime(vol / 100, this.state.AC.currentTime);
+    this.state.gain[side].gain.setValueAtTime(vol / 100, this.state.AC.currentTime);
   }
 
-  // // this crossfades the two songs (which song is playing at any given time)
-  // // takes the crossfade number (value of slider) as parameter
-  // // the slider value goes from 0 to 100
-  // // when cf value is zero, both songs play. at 0, only the left song plays, when 100, only the right song plays
+  // this crossfades the two songs (which song is playing at any given time)
+  // takes the cfade number (slider value) as parameter
+  // the slider value goes from -100 to 100
+  // when cfade value is zero, both songs play, at -100, only the left song plays, at 100, only the right song plays
   crossfade(cfade) {
-  //   // setting the crossfade value for later use
+    // setting the crossfade value for later use
     this.setState({
       cfade,
     });
@@ -287,26 +264,24 @@ class App extends Component {
     // normalizing the crossfade
     // when cf value is below zero, cf2 decrements, cf1 stays at 100
     // when cf value is above zero, cf1 decrements, cf2 stays at 100
-    // const cf1 = this.state.cfade > 0 ? 100 - cfade : 100;
-    // const cf2 = this.state.cfade < 0 ? 100 + cfade : 100;
+    const cf1 = cfade > 0 ? 100 - cfade : 100;
+    const cf2 = cfade < 0 ? 100 + cfade : 100;
 
-    const cf1 = this.state.cfade > 0 ? 100 - cfade : 100;
-    const cf2 = this.state.cfade < 0 ? 100 + cfade : 100;
+    // var gain1 = Math.cos(x * 0.5 * Math.PI);
+
 
     // const cf1 = Math.log10(cfade);
     // const cf2 = Math.log10(cfade);
 
     // normalizing the volume so the cf value doesn't reset the volume level
     // sets the ratio of the cf values above to the volume levels for the songs as new volume levels for those songs
-    const v1 = (1 - (cf1 * this.state.vol.left)) / 10000;
+    const v1 = -(1 - (cf1 * this.state.vol.left)) / 10000;
     const v2 = (cf2 * this.state.vol.right) / 10000;
 
     // console.log("LOG",(+this.state.vol.left * (1 - (Math.log(+cf1) / Math.log(0.5)))) / 100)
 
     // const v1 = (+this.state.vol.left * (1 - (Math.log(+this.state.cfade) / Math.log(0.5)))) / 100
     // const v2 = (+this.state.vol.left * (1 - (Math.log(+this.state.cfade) / Math.log(0.5)))) / 100
-
-    console.log('CROSSFADE', cfade);
 
     // console.log('CF1', cf1);
     // console.log('CF2', cf2);
@@ -315,9 +290,13 @@ class App extends Component {
 
     // sets the volume of the songs for crossfading
     // this.state.songs.left.vol = v1;
-    this.state.source.left.gain.setValueAtTime(v1, this.state.AC.currentTime);
-    this.state.source.right.gain.setValueAtTime(v2, this.state.AC.currentTime);
+    this.state.gain.left.gain.setValueAtTime(v1, this.state.AC.currentTime);
+    this.state.gain.right.gain.setValueAtTime(v2, this.state.AC.currentTime);
     // this.volume(v1, this.state.songs.left, 'left');
+  }
+
+  biquad() {
+    console.log('biquad');
   }
 
   // runtime(rtime, song, side) {
@@ -355,6 +334,7 @@ class App extends Component {
           volume={this.volume}
           cfade={this.state.cfade}
           crossfade={this.crossfade}
+          biquad={this.biquad}
           // runtime={this.runtime}
           // rtime={this.state.rtime}
           // dur={this.state.dur}

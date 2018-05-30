@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Slider from 'react-rangeslider';
-import 'react-rangeslider/lib/index.css';
+// import 'react-rangeslider/lib/index.css';
 
 
 export default function Sliders(props) {
@@ -13,15 +13,17 @@ export default function Sliders(props) {
 
   return (
     <section className="sliders">
-      <Slider
-        className="volume-slider"
-        min={0}
-        max={200}
-        value={vol}
-        tooltip={false}
-        // orientation="vertical"
-        onChange={vol => props.volume(vol, props.songs, props.side)}
-      />
+      <div className="slider-bar">
+        <Slider
+          // className="volume-slider"
+          min={0}
+          max={200}
+          value={vol}
+          tooltip={false}
+          orientation="vertical"
+          onChange={vol => props.volume(vol, props.songs, props.side)}
+        />
+      </div>
     </section>
   );
 }
