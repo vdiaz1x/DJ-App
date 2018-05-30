@@ -155,6 +155,21 @@ class App extends Component {
         left: gain1,
         right: gain2,
       },
+      // high pass node to change high pass
+      hp: {
+        left: highPass1,
+        right: highPass2,
+      },
+      // low pass node to change low pass
+      lp: {
+        left: lowPass1,
+        right: lowPass2,
+      },
+      // band pass node to change band pass (mid pass)
+      bp: {
+        left: bandPass1,
+        right: bandPass2,
+      },
       // initial play state
       play: {
         left: false,
@@ -170,6 +185,36 @@ class App extends Component {
       // 0 is the center (both songs)
       // -100 is the left song and 100 is the right song
       cfade: 0,
+      bq: {
+        hpass: {
+          q: {
+            left: 0,
+            right: 0,
+          },
+          freq: {
+            left: 4000,
+            right: 4000,
+          },
+          detune: {
+            left: 0,
+            right: 0,
+          },
+        },
+        lpass: {
+          q: {
+            left: 0,
+            right: 0,
+          },
+          freq: {
+            left: 250,
+            right: 250,
+          },
+          detune: {
+            left: 0,
+            right: 0,
+          },
+        },
+      },
     };
 
     // this.state = {
@@ -216,8 +261,32 @@ class App extends Component {
         [side]: value,
       },
     });
+  }
 
-    console.log(this.state[parameter]);
+  stateSetFilter(filter, parameter, side, value) {
+    // setting state
+    console.log(this.state.bq);
+    // console.log(this.state.bq);
+
+    this.setState({
+      // parameter for state object
+      bq: {
+        ...this.state.bq,
+        // "test":111,
+        [filter]:{
+          ...this.state.bq[filter],
+          // "new":222,
+          [parameter]:{
+            // check:333,
+            ...this.state.bq[filter][parameter],
+            [side]: value,
+
+          }
+        }
+      },
+    });
+
+    // console.log(this.state[parameter]);
   }
 
   // plays song/pauses song (depending on if song is alredy playing
@@ -254,7 +323,8 @@ class App extends Component {
   // this crossfades the two songs (which song is playing at any given time)
   // takes the cfade number (slider value) as parameter
   // the slider value goes from -100 to 100
-  // when cfade value is zero, both songs play, at -100, only the left song plays, at 100, only the right song plays
+  // when cfade value is zero, both songs play
+  // at -100, only the left song plays, at 100, only the right song plays
   crossfade(cfade) {
     // setting the crossfade value for later use
     this.setState({
@@ -274,7 +344,8 @@ class App extends Component {
     // const cf2 = Math.log10(cfade);
 
     // normalizing the volume so the cf value doesn't reset the volume level
-    // sets the ratio of the cf values above to the volume levels for the songs as new volume levels for those songs
+    // sets the ratio of the cf values above to the volume levels for the songs
+    // as new volume levels for those songs
     const v1 = -(1 - (cf1 * this.state.vol.left)) / 10000;
     const v2 = (cf2 * this.state.vol.right) / 10000;
 
@@ -285,8 +356,8 @@ class App extends Component {
 
     // console.log('CF1', cf1);
     // console.log('CF2', cf2);
-    console.log('V1', v1);
-    console.log('V2', v2);
+    // console.log('V1', v1);
+    // console.log('V2', v2);
 
     // sets the volume of the songs for crossfading
     // this.state.songs.left.vol = v1;
@@ -295,8 +366,8 @@ class App extends Component {
     // this.volume(v1, this.state.songs.left, 'left');
   }
 
-  biquad() {
-    console.log('biquad');
+  biquad(filter, parameter, side, value) {
+    this.stateSetFilter(filter, parameter, side, value);
   }
 
   // runtime(rtime, song, side) {
@@ -334,6 +405,7 @@ class App extends Component {
           volume={this.volume}
           cfade={this.state.cfade}
           crossfade={this.crossfade}
+          bq={this.state.bq}
           biquad={this.biquad}
           // runtime={this.runtime}
           // rtime={this.state.rtime}
