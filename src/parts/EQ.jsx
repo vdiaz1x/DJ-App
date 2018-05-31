@@ -38,7 +38,7 @@ export default function EQ(props) {
           val={q1}
         />
         <EQSlider
-          min={0}
+          min={-1000}
           max={1000}
           filter="hpass"
           param="detune"
@@ -50,8 +50,8 @@ export default function EQ(props) {
 
       <div className="eq-section bandpass">
         <EQSlider
-          min={500}
-          max={3500}
+          min={400}
+          max={4000}
           filter="bpass"
           param="frequency"
           side={props.side}
@@ -68,7 +68,7 @@ export default function EQ(props) {
           val={q2}
         />
         <EQSlider
-          min={0}
+          min={-1000}
           max={1000}
           filter="bpass"
           param="detune"
@@ -80,8 +80,8 @@ export default function EQ(props) {
 
       <div className="eq-section lowpass">
         <EQSlider
-          min={60}
-          max={400}
+          min={100}
+          max={350}
           filter="lpass"
           param="frequency"
           side={props.side}
@@ -98,7 +98,7 @@ export default function EQ(props) {
           val={q3}
         />
         <EQSlider
-          min={0}
+          min={-1000}
           max={1000}
           filter="lpass"
           param="detune"

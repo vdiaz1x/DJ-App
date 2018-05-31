@@ -22,7 +22,21 @@ class App extends Component {
     |--------------------------------------------------------------------------
     */
     // creates new audio context for the web audio API to work
-    const AC = new (window.AudioContext || window.webkitAudioContext)();
+    const AC = new window.AudioContext;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Initializing Audio for Web Audio API Manipulation
+    |--------------------------------------------------------------------------
+    */
+
+    // creating new audio objects
+    const t = new Audio(test);
+    const r = new Audio(chika);
+
+    // converting the audio objects into a media source to be manipulated by the web audio API
+    const source1 = AC.createMediaElementSource(t);
+    const source2 = AC.createMediaElementSource(r);
 
     /*
     |--------------------------------------------------------------------------
@@ -35,7 +49,6 @@ class App extends Component {
     const gain2 = AC.createGain();
 
     // creates delay nodes
-    // add the delay upper limit as param (in seconds)
     const delay1 = AC.createDelay();
     const delay2 = AC.createDelay();
 
@@ -51,23 +64,6 @@ class App extends Component {
     const highPass2 = AC.createBiquadFilter();
     const lowPass2 = AC.createBiquadFilter();
     const bandPass2 = AC.createBiquadFilter();
-
-    /*
-    |--------------------------------------------------------------------------
-    | Initializing Audio for Web Audio API Manipulation
-    |--------------------------------------------------------------------------
-    */
-
-    // creating new audio objects
-    const t = new Audio(test);
-    const r = new Audio(chika);
-
-    // t.volume = 0.5;
-    // r.volume = 0.5;
-
-    // converting the audio objects into a media source to be manipulated by the web audio API
-    const source1 = AC.createMediaElementSource(t);
-    const source2 = AC.createMediaElementSource(r);
 
     /*
     |--------------------------------------------------------------------------
@@ -87,7 +83,7 @@ class App extends Component {
     // delayGain1.connect(delay1);
 
     // connecting the biquadFilterNode to add filter effects
-    // gain1.connect(highPass1).connect(lowPass1).connect(bandPass1);
+    // gain1.connect(highPass1).connect(lowPass1).connect(bandPass1).connect(AC.destination);
     gain1.connect(highPass1);
     gain1.connect(lowPass1);
     gain1.connect(bandPass1);
@@ -98,7 +94,7 @@ class App extends Component {
     // delay2.connect(highShelf2).connect(lowShelf2).connect(bandPass2);
 
     // adding destination so sound can be played
-    highPass1.connect(AC.destination);
+    highPass1.connect(AC.destinationgit);
     lowPass1.connect(AC.destination);
     bandPass1.connect(AC.destination);
 
@@ -314,8 +310,6 @@ class App extends Component {
         }
       },
     });
-
-    console.log(value);
   }
 
   // plays song/pauses song (depending on if song is alredy playing
@@ -402,7 +396,7 @@ class App extends Component {
     // sets the value of the filter
     // console.log(this.state.hp.left.frequency.value =value);
     console.log(filter)
-    console.log(this.state[filter][side])
+    console.log(this.state[filter][side][parameter].value)
     // console.log("Value",this.state.hp[side][parameter].value);
 
     this.state[filter][side][parameter].value = value
@@ -435,7 +429,6 @@ class App extends Component {
     // console.log(window.p5.SoundFile);
     return (
       <div className="App">
-        <Nav />
         <Turntable
           songs={this.state.songs}
           play={this.playSong}
@@ -450,7 +443,6 @@ class App extends Component {
           // rtime={this.state.rtime}
           // dur={this.state.dur}
         />
-        <End />
       </div>
     );
   }
