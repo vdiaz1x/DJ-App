@@ -11,7 +11,11 @@ export default function TurntableHalf(props) {
   return (
     <section className={`tb-half tb-${props.side}`}>
       <div className="tb-disc">
-        <FX />
+        <FX
+          side={props.side}
+          dis={props.dis}
+          distortion={props.distortion}
+        />
         <Vinyl />
         <DrumPads
           side={props.side}

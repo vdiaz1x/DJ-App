@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 
 // importing utilities
-import test from './test.mp3';
-import chika from './chika.mp3';
+// import test from './test.mp3';
+// import chika from './chika.mp3';
+
+import test from './control.mp3';
+import chika from './clarity.mp3';
+
+import impulse from './impulse.wav';
 // import Sound from 'soundmanager2';
 
 // importing components
@@ -22,7 +27,7 @@ class App extends Component {
     |--------------------------------------------------------------------------
     */
     // creates new audio context for the web audio API to work
-    const AC = new window.AudioContext;
+    const AC = new window.AudioContext();
 
     /*
     |--------------------------------------------------------------------------
@@ -33,10 +38,12 @@ class App extends Component {
     // creating new audio objects
     const t = new Audio(test);
     const r = new Audio(chika);
+    const i = new Audio(impulse);
 
     // converting the audio objects into a media source to be manipulated by the web audio API
     const source1 = AC.createMediaElementSource(t);
     const source2 = AC.createMediaElementSource(r);
+    // const rev= AC.decodeAudioData(i)
 
     /*
     |--------------------------------------------------------------------------
@@ -65,6 +72,12 @@ class App extends Component {
     const lowPass2 = AC.createBiquadFilter();
     const bandPass2 = AC.createBiquadFilter();
 
+    // creates convolver
+    const convolver1 = AC.createConvolver();
+
+    // creates wave shaper
+    const wave1 = AC.createWaveShaper();
+
     /*
     |--------------------------------------------------------------------------
     | Connecting All Audio Nodes
@@ -88,19 +101,24 @@ class App extends Component {
     gain1.connect(lowPass1);
     gain1.connect(bandPass1);
 
-    gain2.connect(highPass2);
-    gain2.connect(lowPass2);
-    gain2.connect(bandPass2);
-    // delay2.connect(highShelf2).connect(lowShelf2).connect(bandPass2);
+    // gain2.connect(highPass2);
+    // gain2.connect(lowPass2);
+    // gain2.connect(bandPass2);
+    // // delay2.connect(highShelf2).connect(lowShelf2).connect(bandPass2);
 
-    // adding destination so sound can be played
-    highPass1.connect(AC.destinationgit);
+    // // adding destination so sound can be played
+    highPass1.connect(AC.destination);
     lowPass1.connect(AC.destination);
     bandPass1.connect(AC.destination);
 
-    highPass2.connect(AC.destination);
-    lowPass2.connect(AC.destination);
-    bandPass2.connect(AC.destination);
+    // highPass2.connect(AC.destination);
+    // lowPass2.connect(AC.destination);
+    // bandPass2.connect(AC.destination);
+
+    gain1.connect(wave1).connect(AC.destination);
+    console.log(convolver1);
+    console.log(wave1);
+
 
     /*
     |--------------------------------------------------------------------------
@@ -183,6 +201,16 @@ class App extends Component {
         left: bandPass1,
         right: bandPass2,
       },
+      // wave changer node to change distortion
+      wave: {
+        left: wave1,
+        right: 0,
+      },
+      // wave changer node for distortion
+      distort: {
+        left: 0,
+        right: 0,
+      },
       // initial play state
       play: {
         left: false,
@@ -242,6 +270,10 @@ class App extends Component {
           },
         },
       },
+      dis: {
+        left: 0,
+        right: 0,
+      },
     };
 
     // this.state = {
@@ -271,6 +303,7 @@ class App extends Component {
     this.volume = this.volume.bind(this);
     this.crossfade = this.crossfade.bind(this);
     this.biquad = this.biquad.bind(this);
+    this.distortion = this.distortion.bind(this);
     // this.runtime = this.runtime.bind(this);
   }
 
@@ -298,16 +331,16 @@ class App extends Component {
       bq: {
         // splatting the key:value pairs of bq inside the new state
         ...this.state.bq,
-        [filter]:{
+        [filter]: {
           // splatting the k:v pairs of the filter inside the new state
           ...this.state.bq[filter],
-          [parameter]:{
+          [parameter]: {
             // splatting the l:v pairs of the parameter inside the new state
             ...this.state.bq[filter][parameter],
             // setting the value of the side that actually changes
             [side]: value,
-          }
-        }
+          },
+        },
       },
     });
   }
@@ -394,13 +427,15 @@ class App extends Component {
     // setting the filter values for later use
     this.stateSetFilter(filter, parameter, side, value);
     // sets the value of the filter
-    // console.log(this.state.hp.left.frequency.value =value);
-    console.log(filter)
-    console.log(this.state[filter][side][parameter].value)
-    // console.log("Value",this.state.hp[side][parameter].value);
+    this.state[filter][side][parameter].value = value;
+  }
 
-    this.state[filter][side][parameter].value = value
-    // this.state.hp.left.setValueAtTime(value, this.state.ime);
+  distortion(dis, side) {
+    console.log('DISTORT');
+    console.log(dis);
+    console.log(side);
+    this.stateSet('dis', side, dis);
+    this.state.wave[side].curve = this.makeDistortionCurve(dis);
   }
 
   // runtime(rtime, song, side) {
@@ -424,6 +459,25 @@ class App extends Component {
   //   console.log(rtime);
   // }
 
+  // helper functions for nodes
+  // took function from https://gamedevelopment.tutsplus.com/
+  // tutorials/creating-dynamic-sound-with-
+  // the-web-audio-api--cms-24564
+  makeDistortionCurve(amount) {
+    let k = typeof amount === 'number' ? amount : 50,
+      n_samples = 44100,
+      curve = new Float32Array(n_samples),
+      deg = Math.PI / 180,
+      i = 0,
+      x;
+    for (; i < n_samples; ++i) {
+      x = i * 2 / n_samples - 1;
+      curve[i] = (3 + k) * x * 20 * deg /
+      (Math.PI + k * Math.abs(x));
+    }
+    return curve;
+  }
+
   // render
   render() {
     // console.log(window.p5.SoundFile);
@@ -439,6 +493,8 @@ class App extends Component {
           crossfade={this.crossfade}
           bq={this.state.bq}
           biquad={this.biquad}
+          dis={this.state.dis}
+          distortion={this.distortion}
           // runtime={this.runtime}
           // rtime={this.state.rtime}
           // dur={this.state.dur}

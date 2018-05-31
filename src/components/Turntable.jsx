@@ -16,6 +16,8 @@ export default function Turntable(props) {
         volume={props.volume}
         bq={props.bq}
         biquad={props.biquad}
+        dis={props.dis.left}
+        distortion={props.distortion}
         // runtime={props.runtime}
         // rtime={props.rtime.rt1}
         // dur={props.dur.d1}
@@ -30,6 +32,8 @@ export default function Turntable(props) {
         volume={props.volume}
         bq={props.bq}
         biquad={props.biquad}
+        dis={props.dis.right}
+        distortion={props.distortion}
         // runtime={props.runtime}
         // rtime={props.rtime.rt2}
         // dur={props.dur.d2}

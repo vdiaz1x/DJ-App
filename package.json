@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "audio-effects": "^1.2.4",
     "eslint": "^4.19.1",
     "p5": "^0.6.1",
     "react": "^16.4.0",

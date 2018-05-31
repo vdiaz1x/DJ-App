@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Slider from 'react-rangeslider';
+// import Slider from 'react-rangeslider';
 import EQSlider from './EQSlider';
 
 export default function EQ(props) {
