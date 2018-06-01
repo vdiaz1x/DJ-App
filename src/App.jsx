@@ -311,6 +311,7 @@ class App extends Component {
         password: '',
         error: null,
       },
+      user: null,
     };
 
     // this.state = {
@@ -478,9 +479,9 @@ class App extends Component {
   }
 
   distortion(dis, side) {
-    console.log('DISTORT');
-    console.log(dis);
-    console.log(side);
+    // console.log('DISTORT');
+    // console.log(dis);
+    // console.log(side);
     this.stateSet('dis', side, dis);
     this.state.wave[side].curve = this.makeDistortionCurve(dis);
   }
@@ -545,7 +546,7 @@ class App extends Component {
       },
     });
 
-    console.log(this.state[state]);
+    // console.log(this.state[state]);
   }
 
   register() {
@@ -559,7 +560,7 @@ class App extends Component {
           username,
           email,
         })
-          .then(() => this.setState({
+          .then(res => this.setState({
             reg: {
               email: '',
               username: '',
@@ -567,10 +568,12 @@ class App extends Component {
               passwordCheck: '',
               error: null,
             },
+            user: res.user.Q,
           }))
-          .catch(err => this.input('error', err));
+          .catch((err) => { console.log(err); this.input('error', err); });
       })
       .catch((err) => {
+        console.log(err);
         this.setState({
           reg: {
             ...this.state.reg,
@@ -584,13 +587,14 @@ class App extends Component {
     console.log('login');
     const { email, password } = this.state.log;
     auth.signInWithEmailAndPassword(email, password)
-      .then(() => {
+      .then((res) => {
         this.setState(() => ({
           log: {
             email: '',
             password: '',
             error: null,
           },
+          user: res.user,
         }));
         // history.push(routes.HOME);
       })
@@ -607,8 +611,15 @@ class App extends Component {
   save() {
     const config = {
       ...this.state,
+      // user: {},
     };
+
     console.log(config);
+
+    const cfg = firebase.database().ref('config');
+    console.log(cfg);
+
+    cfg.push(config);
   }
 
   // render
