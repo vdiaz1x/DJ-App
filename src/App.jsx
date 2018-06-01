@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import firebase, { auth, provider, db } from './firebase.js';
 
 // importing utilities
 // import test from './test.mp3';
@@ -6,14 +7,19 @@ import React, { Component } from 'react';
 
 import test from './control.mp3';
 import chika from './clarity.mp3';
-
 import impulse from './impulse.wav';
+
+// import impulse from './impulse.wav';
 // import Sound from 'soundmanager2';
 
-// importing components
+// importing turntable components
 import Nav from './components/Nav';
 import End from './components/End';
-import Turntable from './components/Turntable';
+// import Turntable from './components/Turntable';
+
+// importing register/log in forms
+import Register from './components/Register';
+import Login from './components/Login';
 
 // const SM = Sound.soundManager;
 
@@ -39,6 +45,7 @@ class App extends Component {
     const t = new Audio(test);
     const r = new Audio(chika);
     const i = new Audio(impulse);
+    let decode;
 
     // converting the audio objects into a media source to be manipulated by the web audio API
     const source1 = AC.createMediaElementSource(t);
@@ -78,6 +85,21 @@ class App extends Component {
     // creates wave shaper
     const wave1 = AC.createWaveShaper();
 
+    // fetch the file from the server and return a response object to the next .then()
+    // example taken from https://web-audio-api.firebaseapp.com/convolver-node
+    fetch(impulse)
+      // retrieve and return an ArrayBuffer to the next .then()
+      .then(response => response.arrayBuffer())
+      .then((buffer) => {
+        // decode the ArrayBuffer as an AudioBuffer
+        AC.decodeAudioData(buffer, (decoded) => {
+          // store the resulting AudioBuffer
+          convolver1.buffer = decoded;
+          // decode = decoded;
+        })
+          .catch(err => console.log(err));
+      });
+
     /*
     |--------------------------------------------------------------------------
     | Connecting All Audio Nodes
@@ -96,7 +118,7 @@ class App extends Component {
     // delayGain1.connect(delay1);
 
     // connecting the biquadFilterNode to add filter effects
-    // gain1.connect(highPass1).connect(lowPass1).connect(bandPass1).connect(AC.destination);
+    // gain1.connect(AC.destination);
     gain1.connect(highPass1);
     gain1.connect(lowPass1);
     gain1.connect(bandPass1);
@@ -116,6 +138,8 @@ class App extends Component {
     // bandPass2.connect(AC.destination);
 
     gain1.connect(wave1).connect(AC.destination);
+    convolver1.normalize = false;
+
     console.log(convolver1);
     console.log(wave1);
 
@@ -274,6 +298,18 @@ class App extends Component {
         left: 0,
         right: 0,
       },
+      reg: {
+        email: '',
+        username: '',
+        password: '',
+        passwordCheck: '',
+        error: null,
+      },
+      log: {
+        email: '',
+        password: '',
+        error: null,
+      },
     };
 
     // this.state = {
@@ -304,10 +340,19 @@ class App extends Component {
     this.crossfade = this.crossfade.bind(this);
     this.biquad = this.biquad.bind(this);
     this.distortion = this.distortion.bind(this);
+    this.input = this.input.bind(this);
+    this.register = this.register.bind(this);
+    this.login = this.login.bind(this);
+
     // this.runtime = this.runtime.bind(this);
   }
 
-  // functions
+  /*
+  |--------------------------------------------------------------------------
+  | Function
+  |--------------------------------------------------------------------------
+  */
+
   // sets the state based on a template for state properties
   stateSet(parameter, side, value) {
     // setting state
@@ -478,29 +523,112 @@ class App extends Component {
     return curve;
   }
 
+  /*
+  |--------------------------------------------------------------------------
+  | Register/Login Functions
+  |--------------------------------------------------------------------------
+  */
+
+  // storing the value of the input elements in the state
+  input(e, info, state) {
+    // checking to see if there is a value to input
+    const val = (e.target !== undefined) ? e.target.value : '';
+    // setting state
+    this.setState({
+      [state]: {
+        // adds the current k:v pairs inside the user state
+        ...this.state[state],
+        // adds the value of the k:v pair being updated
+        [info]: val,
+      },
+    });
+
+    console.log(this.state[state]);
+  }
+
+  register() {
+    const {
+      username, email, password,
+    } = this.state.reg;
+
+    auth.createUserWithEmailAndPassword(email, password)
+      .then((auth) => {
+        db.ref(auth.uid).set({
+          username,
+          email,
+        })
+          .then(() => this.setState({
+            reg: {
+              email: '',
+              username: '',
+              password: '',
+              passwordCheck: '',
+              error: null,
+            },
+          }))
+          .catch(err => this.input('error', err));
+      })
+      .catch((err) => {
+        this.setState({
+          reg: {
+            ...this.state.reg,
+            error: err,
+          },
+        });
+      });
+  }
+
+  login() {
+    console.log('login');
+    const { email, password } = this.state.log;
+    auth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        this.setState(() => ({
+          log: {
+            email: '',
+            password: '',
+            error: null,
+          },
+        }));
+        // history.push(routes.HOME);
+      })
+      .catch((err) => {
+        this.setState({
+          log: {
+            ...this.state.log,
+            error: err,
+          },
+        });
+      });
+  }
+
   // render
   render() {
-    // console.log(window.p5.SoundFile);
-    return (
-      <div className="App">
-        <Turntable
-          songs={this.state.songs}
-          play={this.playSong}
-          stop={this.stopSong}
-          vol={this.state.vol}
-          volume={this.volume}
-          cfade={this.state.cfade}
-          crossfade={this.crossfade}
-          bq={this.state.bq}
-          biquad={this.biquad}
-          dis={this.state.dis}
-          distortion={this.distortion}
-          // runtime={this.runtime}
-          // rtime={this.state.rtime}
-          // dur={this.state.dur}
-        />
-      </div>
-    );
+    // console.log(db);
+    // return (
+    //   <div className="App">
+    //     <Turntable
+    //       songs={this.state.songs}
+    //       play={this.playSong}
+    //       stop={this.stopSong}
+    //       vol={this.state.vol}
+    //       volume={this.volume}
+    //       cfade={this.state.cfade}
+    //       crossfade={this.crossfade}
+    //       bq={this.state.bq}
+    //       biquad={this.biquad}
+    //       dis={this.state.dis}
+    //       distortion={this.distortion}
+    //       // runtime={this.runtime}
+    //       // rtime={this.state.rtime}
+    //       // dur={this.state.dur}
+    //     />
+    //   </div>
+    // );
+
+    // return <Register register={this.register} input={this.input} reg={this.state.reg} />;
+
+    return <Login login={this.login} input={this.input} log={this.state.log} />;
   }
 }
 

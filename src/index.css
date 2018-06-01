@@ -188,3 +188,41 @@
 /* range slider */
 .rangeslider__labels{width:0;height:0 !important;}
 .rangeslider-vertical{background:#444 !important;height:100% !important;margin:0 auto !important;}
+
+/*
+|--------------------------------------------------------------------------
+| Register/Login Forms
+|--------------------------------------------------------------------------
+*/
+
+.register, .login{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.register-form, .login-form{
+  display:flex;
+  flex-wrap:wrap;
+  /* height:50%; */
+  width:50%;
+  /* margin:0 auto; */
+}
+
+label{
+  padding:10px;
+  font-size:20px;
+}
+
+input{
+  width:100%;
+  padding:10px 20px;
+  font-size:24px;
+}
+
+button{
+  padding:20px;
+  margin-top:20px;
+  font-size:30px;
+}
