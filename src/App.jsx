@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import firebase, { auth, provider, db } from './firebase.js';
+import { Route, Switch } from 'react-router-dom';
 
 // importing utilities
 // import test from './test.mp3';
@@ -15,7 +16,7 @@ import impulse from './impulse.wav';
 // importing turntable components
 import Nav from './components/Nav';
 import End from './components/End';
-// import Turntable from './components/Turntable';
+import Turntable from './components/Turntable';
 
 // importing register/log in forms
 import Register from './components/Register';
@@ -140,8 +141,8 @@ class App extends Component {
     gain1.connect(wave1).connect(AC.destination);
     convolver1.normalize = false;
 
-    console.log(convolver1);
-    console.log(wave1);
+    // console.log(convolver1);
+    // console.log(wave1);
 
 
     /*
@@ -343,6 +344,7 @@ class App extends Component {
     this.input = this.input.bind(this);
     this.register = this.register.bind(this);
     this.login = this.login.bind(this);
+    this.save = this.save.bind(this);
 
     // this.runtime = this.runtime.bind(this);
   }
@@ -525,7 +527,7 @@ class App extends Component {
 
   /*
   |--------------------------------------------------------------------------
-  | Register/Login Functions
+  | User Functions
   |--------------------------------------------------------------------------
   */
 
@@ -602,9 +604,59 @@ class App extends Component {
       });
   }
 
+  save() {
+    const config = {
+      ...this.state,
+    };
+    console.log(config);
+  }
+
   // render
   render() {
     // console.log(db);
+
+    return (
+      <div className="App">
+        <Nav save={this.save} />
+        <Switch>
+          <Route
+            path="/register"
+            render={() =>
+              (<Register
+                register={this.register}
+                input={this.input}
+                reg={this.state.reg}
+              />)}
+          />
+          <Route
+            path="/login"
+            render={() =>
+              (<Login
+                login={this.login}
+                input={this.input}
+                log={this.state.log}
+              />)}
+          />
+          <Route
+            path="/"
+            render={() => (<Turntable
+              songs={this.state.songs}
+              play={this.playSong}
+              stop={this.stopSong}
+              vol={this.state.vol}
+              volume={this.volume}
+              cfade={this.state.cfade}
+              crossfade={this.crossfade}
+              bq={this.state.bq}
+              biquad={this.biquad}
+              dis={this.state.dis}
+              distortion={this.distortion}
+            />)}
+          />
+        </Switch>
+
+      </div>
+    );
     // return (
     //   <div className="App">
     //     <Turntable
@@ -628,7 +680,7 @@ class App extends Component {
 
     // return <Register register={this.register} input={this.input} reg={this.state.reg} />;
 
-    return <Login login={this.login} input={this.input} log={this.state.log} />;
+    // return <Login login={this.login} input={this.input} log={this.state.log} />;
   }
 }
 
