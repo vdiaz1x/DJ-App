@@ -2,21 +2,18 @@ import React, { Component } from 'react';
 import firebase, { auth, provider, db } from './firebase.js';
 import { Route, Switch } from 'react-router-dom';
 
-// importing utilities
+// importing music
 // import test from './test.mp3';
 // import chika from './chika.mp3';
 
-import test from './control.mp3';
-import chika from './clarity.mp3';
+import left from './control.mp3';
+import right from './clarity.mp3';
 import impulse from './impulse.wav';
 
 import bomb from './samples/flexbomb.mp3';
 import horn from './samples/airhorn.mp3';
 import bed from './samples/bedsqueak.mp3';
 import lex from './samples/lexluger.mp3';
-
-// import impulse from './impulse.wav';
-// import Sound from 'soundmanager2';
 
 // importing turntable components
 import Nav from './components/Nav';
@@ -26,8 +23,6 @@ import Turntable from './components/Turntable';
 // importing register/log in forms
 import Register from './components/Register';
 import Login from './components/Login';
-
-// const SM = Sound.soundManager;
 
 class App extends Component {
   constructor(props) {
@@ -48,9 +43,8 @@ class App extends Component {
     */
 
     // creating new audio objects
-    const t = new Audio(test);
-    const r = new Audio(chika);
-    const i = new Audio(impulse);
+    const l = new Audio(left);
+    const r = new Audio(right);
     let decode;
     // t.playbackRate = 0.5;
     console.log(db);
@@ -67,9 +61,8 @@ class App extends Component {
 
 
     // converting the audio objects into a media source to be manipulated by the web audio API
-    const source1 = AC.createMediaElementSource(t);
+    const source1 = AC.createMediaElementSource(l);
     const source2 = AC.createMediaElementSource(r);
-    // const rev= AC.decodeAudioData(i)
 
     /*
     |--------------------------------------------------------------------------
@@ -110,13 +103,15 @@ class App extends Component {
       // retrieve and return an ArrayBuffer to the next .then()
       .then(response => response.arrayBuffer())
       .then((buffer) => {
+        console.log("BUFFED");
+
         // decode the ArrayBuffer as an AudioBuffer
         AC.decodeAudioData(buffer, (decoded) => {
           // store the resulting AudioBuffer
           convolver1.buffer = decoded;
           // decode = decoded;
         })
-          .catch(err => console.log(err));
+          .catch(err => console.log("BUFFER?",err));
       });
 
     /*
@@ -156,7 +151,7 @@ class App extends Component {
     // lowPass2.connect(AC.destination);
     // bandPass2.connect(AC.destination);
 
-    gain1.connect(wave1).connect(AC.destination);
+    gain1.connect(convolver1).connect(AC.destination);
     convolver1.normalize = false;
 
     // console.log(convolver1);
@@ -221,7 +216,7 @@ class App extends Component {
       AC,
       // songs on deck
       songs: {
-        left: t,
+        left: l,
         right: r,
       },
       // samples on sample deck
@@ -427,8 +422,6 @@ class App extends Component {
   // takes song id as parameter
   playSong(song, side) {
     // toggles between play and pause depending on state
-    console.log(song);
-
     !this.state.play[side] ? song.play() : song.pause();
     // sets state to opposite
     this.stateSet('play', side, !this.state.play[side]);
@@ -656,11 +649,11 @@ class App extends Component {
   }
 
   logout() {
-    console.log(this.state.user);
+    // console.log(this.state.user);
     auth.signOut();
-    // this.setState({
-    //   user: null,
-    // });
+    this.setState({
+      user: null,
+    });
   }
 
   save(e) {
@@ -678,8 +671,20 @@ class App extends Component {
     db.ref(`users/${this.state.user.uid}/config`).push(config);
   }
 
-  retrieve() {
+  retrieve(e) {
+    e.preventDefault();
+    let thing;
+    const t2 = [];
     console.log('retrieve');
+    db.ref(`users/${this.state.user.uid}/config`).on('value', (config) => {
+      thing = config.val();
+      // console.log(thing);
+      Object.keys(thing).forEach(key => t2.push(thing[key]));
+      // console.log(t2);
+      this.setState({
+        ...t2[0],
+      });
+    });
   }
 
   // render
@@ -688,7 +693,12 @@ class App extends Component {
 
     return (
       <div className="App">
-        <Nav save={this.save} retrieve={this.retrieve} user={this.state.user} logout={this.logout} />
+        <Nav
+          save={this.save}
+          retrieve={this.retrieve}
+          user={this.state.user}
+          logout={this.logout}
+        />
         <Switch>
           <Route
             path="/register"
@@ -731,30 +741,6 @@ class App extends Component {
 
       </div>
     );
-    // return (
-    //   <div className="App">
-    //     <Turntable
-    //       songs={this.state.songs}
-    //       play={this.playSong}
-    //       stop={this.stopSong}
-    //       vol={this.state.vol}
-    //       volume={this.volume}
-    //       cfade={this.state.cfade}
-    //       crossfade={this.crossfade}
-    //       bq={this.state.bq}
-    //       biquad={this.biquad}
-    //       dis={this.state.dis}
-    //       distortion={this.distortion}
-    //       // runtime={this.runtime}
-    //       // rtime={this.state.rtime}
-    //       // dur={this.state.dur}
-    //     />
-    //   </div>
-    // );
-
-    // return <Register register={this.register} input={this.input} reg={this.state.reg} />;
-
-    // return <Login login={this.login} input={this.input} log={this.state.log} />;
   }
 }
 

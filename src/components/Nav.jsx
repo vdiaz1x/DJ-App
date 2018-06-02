@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 export default function Nav(props) {
-  console.log(props);
+  // console.log(props);
 
   const user = !props.user;
   const inLog = <NavLink className="nav-link" to="/login">Login</NavLink>;
