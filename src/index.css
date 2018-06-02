@@ -25,7 +25,7 @@ a{
 
 .nav{
   height:10vh;
-  /* border:1px solid red; */
+  border-bottom:1px solid white;
   display:flex;
   justify-content: flex-end;
   align-items:center;
@@ -71,6 +71,7 @@ a{
   justify-content:space-between;;
   flex-wrap:wrap;
   height:90vh;
+  width:100vw;
 }
 
 .tb-half{
@@ -117,6 +118,7 @@ a{
 | Turntable Parts
 |--------------------------------------------------------------------------
 */
+.fx, .vinyl, .drum-pads, .eq, .sliders{padding:10px;}
 
 .fx{
   height:15%;
@@ -181,7 +183,7 @@ a{
 
 .playback{
   display: flex;
-  padding:10px 0;
+  /* padding:10px 0; */
   justify-content: space-between;
 }
 
@@ -266,20 +268,32 @@ a{
 .slider-bar{
   /* border:1px solid white; */
   width:20%;
-  height:100%;
+  height:85%;
 }
 
 /* sliders */
 .eq-section{
   height:33%;
   display:flex;
-  justify-content:space-around;
+  justify-content:flex-end;
+}
+
+.eq-left{
+  flex-direction:row;
+}
+
+.eq-right{
+  flex-direction:row-reverse;
+}
+
+.eq-subtitle{
+  text-align:center;
 }
 
 .eq-slider{
   /* border:1px solid white; */
 }
-
+/*
 .highpass{
   background:rgba(255,0,0,.3)
 }
@@ -290,11 +304,34 @@ a{
 
 .bandpass{
   background:rgba(0,0,255,.3)
-}
+} */
 
 /* range slider */
 .rangeslider__labels{width:0;height:0 !important;}
 .rangeslider-vertical{background:#444 !important;height:100% !important;margin:0 auto !important;}
+.rangeslider-horizontal {
+    /* height: 12px; */
+    border-radius: 0;
+}
+.rangeslider-vertical .rangeslider__handle{
+  background: #555 !important;
+  border: 2px solid #999 !important;
+  border-radius: 2px !important;
+  }
+  .rangeslider-horizontal .rangeslider__handle{
+  width:10px;
+  background: #555 !important;
+  border: 2px solid #999 !important;
+  border-radius: 2px !important;
+  }
+
+  .rangeslider-horizontal .rangeslider__handle:after {width:0;}
+.rangeslider__fill{ background:#ccc !important;}
+
+.freq .rangeslider__fill{ background:red !important;}
+.Q .rangeslider__fill{ background:green !important;}
+.detune .rangeslider__fill{ background:blue !important;}
+
 
 /*
 |--------------------------------------------------------------------------

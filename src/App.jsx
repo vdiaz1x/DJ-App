@@ -52,6 +52,9 @@ class App extends Component {
     const r = new Audio(chika);
     const i = new Audio(impulse);
     let decode;
+    // t.playbackRate = 0.5;
+    console.log(db);
+
 
     const s1 = new Audio(bomb);
     const s2 = new Audio(horn);
@@ -61,6 +64,7 @@ class App extends Component {
     const s6 = new Audio(horn);
     const s7 = new Audio(horn);
     const s8 = new Audio(horn);
+
 
     // converting the audio objects into a media source to be manipulated by the web audio API
     const source1 = AC.createMediaElementSource(t);
@@ -369,7 +373,9 @@ class App extends Component {
     this.input = this.input.bind(this);
     this.register = this.register.bind(this);
     this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
     this.save = this.save.bind(this);
+    this.retrieve = this.retrieve.bind(this);
 
     // this.runtime = this.runtime.bind(this);
   }
@@ -577,21 +583,23 @@ class App extends Component {
         [info]: val,
       },
     });
-
-    // console.log(this.state[state]);
   }
 
   register() {
+    // pulling the user info from the state
     const {
       username, email, password,
     } = this.state.reg;
 
+    // creating a user with firebase
     auth.createUserWithEmailAndPassword(email, password)
+      // if the info is valid, then store the username into the db
       .then((auth) => {
-        db.ref(auth.uid).set({
+        db.ref(`users/${auth.user.uid}`).set({
           username,
           email,
         })
+          // erase the user info from the state
           .then(res => this.setState({
             reg: {
               email: '',
@@ -600,10 +608,12 @@ class App extends Component {
               passwordCheck: '',
               error: null,
             },
-            user: res.user.Q,
+            user: res.user,
           }))
+          // saves error
           .catch((err) => { console.log(err); this.input('error', err); });
       })
+      // saves error
       .catch((err) => {
         console.log(err);
         this.setState({
@@ -620,6 +630,11 @@ class App extends Component {
     const { email, password } = this.state.log;
     auth.signInWithEmailAndPassword(email, password)
       .then((res) => {
+        // console.log(res);
+        // console.log(res.user);
+        // console.log(res.user.Q);
+
+
         this.setState(() => ({
           log: {
             email: '',
@@ -640,19 +655,31 @@ class App extends Component {
       });
   }
 
+  logout() {
+    console.log(this.state.user);
+    auth.signOut();
+    // this.setState({
+    //   user: null,
+    // });
+  }
+
   save(e) {
     e.preventDefault();
     const config = {
       ...this.state,
-      // user: {},
+      user: {},
     };
 
-    console.log(config);
+    // console.log(config);
 
-    const cfg = firebase.database().ref('config');
-    console.log(cfg);
+    // const cfg = firebase.database()
+    // console.log(cfg);
 
-    cfg.push(config);
+    db.ref(`users/${this.state.user.uid}/config`).push(config);
+  }
+
+  retrieve() {
+    console.log('retrieve');
   }
 
   // render
@@ -661,7 +688,7 @@ class App extends Component {
 
     return (
       <div className="App">
-        <Nav save={this.save} />
+        <Nav save={this.save} retrieve={this.retrieve} user={this.state.user} logout={this.logout} />
         <Switch>
           <Route
             path="/register"

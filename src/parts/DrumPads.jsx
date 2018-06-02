@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function DrumPads(props) {
-  console.log(props.samples);
+  // console.log(props.samples);
 
   const drumSample = props.samples.map((samp, i) =>
     (<button
@@ -10,7 +10,8 @@ export default function DrumPads(props) {
       key={`samp${++i}`}
     >{i}
      </button>));
-  console.log(drumSample);
+
+  // console.log(drumSample);
   const play = !props.pause ? 'play' : 'pause';
   return (
     <section className="drum-pads">

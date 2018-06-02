@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Slider from 'react-rangeslider';
-import 'react-rangeslider/lib/index.css';
 
 export default function Vinyl(props) {
   // const leftRight = props.side === 'tb-left';

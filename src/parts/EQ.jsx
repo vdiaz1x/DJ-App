@@ -18,7 +18,9 @@ export default function EQ(props) {
 
   return (
     <section className="eq">
-      <div className="eq-section highpass">
+      <div className={`eq-section highpass eq-${props.side}`}>
+        <div className="eq-on">ON SWITCH</div>
+
         <EQSlider
           min={2000}
           max={6000}
@@ -48,7 +50,7 @@ export default function EQ(props) {
         />
       </div>
 
-      <div className="eq-section bandpass">
+      <div className={`eq-section bandpass eq-${props.side}`}>
         <EQSlider
           min={400}
           max={4000}
@@ -78,7 +80,7 @@ export default function EQ(props) {
         />
       </div>
 
-      <div className="eq-section lowpass">
+      <div className={`eq-section lowpass eq-${props.side}`}>
         <EQSlider
           min={100}
           max={350}
