@@ -14,40 +14,34 @@ export default function Register(props) {
   return (
     <section className="register">
       <div className="register-form">
-        <label htmlFor="">Username</label>
+        <label className="register-label" htmlFor="">Username</label>
         <input
+          className="register-input"
           type="text"
           onChange={e => props.input(e, 'username', 'reg')}
         />
-        <label htmlFor="">Email</label>
+        <label className="register-label" htmlFor="">Email</label>
         <input
+          className="register-input"
           type="text"
           onChange={e => props.input(e, 'email', 'reg')}
         />
-        <label htmlFor="">Password</label>
+        <label className="register-label" htmlFor="">Password</label>
         <input
+          className="register-input"
           type="text"
           onChange={e => props.input(e, 'password', 'reg')}
         />
-        <label htmlFor="">Password Check</label>
+        <label className="register-label" htmlFor="">Password Check</label>
         <input
+          className="register-input"
           type="text"
           onChange={e => props.input(e, 'passwordCheck', 'reg')}
         />
-        <button disabled={invalid} onClick={props.register}>Submit</button>
-        {error && <p>{error.message}</p>}
+        <button className="submit" disabled={invalid} onClick={props.register}>Submit</button>
+
       </div>
+      {error && <p className="error">{error.message}</p>}
     </section>
   );
 }
-
-// <label htmlFor="">First Name</label>
-//   <input
-//     type="text"
-//     onChange={(e) => props.input(e, "fname")}
-//   />
-//   <label htmlFor="">Last Name</label>
-//   <input
-//     type="text"
-//     onChange={(e) => props.input(e, "lname")}
-//   />

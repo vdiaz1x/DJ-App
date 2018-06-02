@@ -10,6 +10,11 @@ import test from './control.mp3';
 import chika from './clarity.mp3';
 import impulse from './impulse.wav';
 
+import bomb from './samples/flexbomb.mp3';
+import horn from './samples/airhorn.mp3';
+import bed from './samples/bedsqueak.mp3';
+import lex from './samples/lexluger.mp3';
+
 // import impulse from './impulse.wav';
 // import Sound from 'soundmanager2';
 
@@ -47,6 +52,15 @@ class App extends Component {
     const r = new Audio(chika);
     const i = new Audio(impulse);
     let decode;
+
+    const s1 = new Audio(bomb);
+    const s2 = new Audio(horn);
+    const s3 = new Audio(bed);
+    const s4 = new Audio(lex);
+    const s5 = new Audio(horn);
+    const s6 = new Audio(horn);
+    const s7 = new Audio(horn);
+    const s8 = new Audio(horn);
 
     // converting the audio objects into a media source to be manipulated by the web audio API
     const source1 = AC.createMediaElementSource(t);
@@ -206,6 +220,15 @@ class App extends Component {
         left: t,
         right: r,
       },
+      // samples on sample deck
+      samples: {
+        left: [
+          s1, s2, s3, s4, s5, s6, s7, s8,
+        ],
+        right: [
+          s1, s2, s3, s4, s5, s6, s7, s8,
+        ],
+      },
       // gain node to change gain
       gain: {
         left: gain1,
@@ -342,6 +365,7 @@ class App extends Component {
     this.crossfade = this.crossfade.bind(this);
     this.biquad = this.biquad.bind(this);
     this.distortion = this.distortion.bind(this);
+    this.sampler = this.sampler.bind(this);
     this.input = this.input.bind(this);
     this.register = this.register.bind(this);
     this.login = this.login.bind(this);
@@ -397,6 +421,8 @@ class App extends Component {
   // takes song id as parameter
   playSong(song, side) {
     // toggles between play and pause depending on state
+    console.log(song);
+
     !this.state.play[side] ? song.play() : song.pause();
     // sets state to opposite
     this.stateSet('play', side, !this.state.play[side]);
@@ -526,6 +552,12 @@ class App extends Component {
     return curve;
   }
 
+  sampler(sample) {
+    // sample.pause();
+    sample.currentTime = 0;
+    sample.play();
+  }
+
   /*
   |--------------------------------------------------------------------------
   | User Functions
@@ -608,7 +640,8 @@ class App extends Component {
       });
   }
 
-  save() {
+  save(e) {
+    e.preventDefault();
     const config = {
       ...this.state,
       // user: {},
@@ -652,8 +685,11 @@ class App extends Component {
             path="/"
             render={() => (<Turntable
               songs={this.state.songs}
+              samples={this.state.samples}
+              pause={this.state.play}
               play={this.playSong}
               stop={this.stopSong}
+              sampler={this.sampler}
               vol={this.state.vol}
               volume={this.volume}
               cfade={this.state.cfade}

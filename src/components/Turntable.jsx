@@ -10,6 +10,9 @@ export default function Turntable(props) {
       <TurntableHalf
         side="left"
         songs={props.songs.left}
+        samples={props.samples.left}
+        sampler={props.sampler}
+        pause={props.pause.left}
         play={props.play}
         stop={props.stop}
         vol={props.vol.left}
@@ -26,6 +29,9 @@ export default function Turntable(props) {
       <TurntableHalf
         side="right"
         songs={props.songs.right}
+        samples={props.samples.right}
+        sampler={props.sampler}
+        pause={props.pause.right}
         play={props.play}
         stop={props.stop}
         vol={props.vol.right}

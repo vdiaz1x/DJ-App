@@ -4,10 +4,11 @@ import { NavLink } from 'react-router-dom';
 export default function Nav(props) {
   return (
     <nav className="nav">
-      <NavLink to="/">DJ</NavLink>
-      <NavLink to="/login">Login</NavLink>
-      <NavLink to="/register">Register</NavLink>
-      <div onClick={props.save}>Save Filter Config</div>
+      <NavLink className="nav-link dj-link" to="/">DJ</NavLink>
+      <h4 className="dj-title">DJ App</h4>
+      <NavLink className="nav-link"to="/" onClick={props.save}>Save Filters</NavLink>
+      <NavLink className="nav-link" to="/login">Login</NavLink>
+      <NavLink className="nav-link" to="/register">Register</NavLink>
     </nav>
   );
 }

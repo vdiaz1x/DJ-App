@@ -18,10 +18,13 @@ export default function TurntableHalf(props) {
         />
         <Vinyl />
         <DrumPads
+          pause={props.pause}
           side={props.side}
+          samples={props.samples}
           songs={props.songs}
           play={props.play}
           stop={props.stop}
+          sampler={props.sampler}
         />
       </div>
       <div className="tb-knobs">
