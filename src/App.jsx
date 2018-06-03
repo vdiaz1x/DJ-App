@@ -45,11 +45,11 @@ class App extends Component {
     // creating new audio objects
     const l = new Audio(left);
     const r = new Audio(right);
-    let decode;
+    // let decode;
     // t.playbackRate = 0.5;
-    console.log(db);
+    // console.log(db);
 
-
+    // creating samples
     const s1 = new Audio(bomb);
     const s2 = new Audio(horn);
     const s3 = new Audio(bed);
@@ -58,7 +58,6 @@ class App extends Component {
     const s6 = new Audio(horn);
     const s7 = new Audio(horn);
     const s8 = new Audio(horn);
-
 
     // converting the audio objects into a media source to be manipulated by the web audio API
     const source1 = AC.createMediaElementSource(l);
@@ -93,6 +92,7 @@ class App extends Component {
 
     // creates convolver
     const convolver1 = AC.createConvolver();
+    const reverb1 = AC.createGain();
 
     // creates wave shaper
     const wave1 = AC.createWaveShaper();
@@ -103,56 +103,60 @@ class App extends Component {
       // retrieve and return an ArrayBuffer to the next .then()
       .then(response => response.arrayBuffer())
       .then((buffer) => {
-        console.log("BUFFED");
+        console.log('BUFFED');
 
         // decode the ArrayBuffer as an AudioBuffer
         AC.decodeAudioData(buffer, (decoded) => {
           // store the resulting AudioBuffer
           convolver1.buffer = decoded;
-          // decode = decoded;
         })
-          .catch(err => console.log("BUFFER?",err));
+          .catch(err => console.log('BUFFER?', err));
       });
 
     /*
     |--------------------------------------------------------------------------
-    | Connecting All Audio Nodes
+    | Connecting Audio Nodes
     |--------------------------------------------------------------------------
     */
 
-    // connecting the gainNode to change volume
-    source1.connect(gain1);
-    source2.connect(gain2);
+    // connecting the source to the filters
+    source1.connect(highPass1);
+    source1.connect(bandPass1);
+    source1.connect(lowPass1);
+
+    // connecting the filter nodes to the gain
+    highPass1.connect(gain1);
+    lowPass1.connect(gain1);
+    bandPass1.connect(gain1);
 
     // connecting the delayNode to add delay effect
     // gain1.connect(delay1);
     // gainNode2.connect(delayNode2);
 
-    // delay1.connect(delayGain1);
-    // delayGain1.connect(delay1);
+    // connecting the source to the convolver and the wave changer
+    reverb1.gain.value = 0;
 
-    // connecting the biquadFilterNode to add filter effects
-    // gain1.connect(AC.destination);
-    gain1.connect(highPass1);
-    gain1.connect(lowPass1);
-    gain1.connect(bandPass1);
+    source1.connect(reverb1).connect(convolver1).connect(wave1).connect(gain1);
 
-    // gain2.connect(highPass2);
-    // gain2.connect(lowPass2);
-    // gain2.connect(bandPass2);
-    // // delay2.connect(highShelf2).connect(lowShelf2).connect(bandPass2);
+
+    // connecting the gain node to the speakers (destination)
+    gain1.connect(AC.destination);
+
+    // lowPass1.disconnect(0)
 
     // // adding destination so sound can be played
-    highPass1.connect(AC.destination);
-    lowPass1.connect(AC.destination);
-    bandPass1.connect(AC.destination);
+    // highPass1.connect(AC.destination);
+    // lowPass1.connect(AC.destination);
+    // bandPass1.connect(AC.destination);
 
     // highPass2.connect(AC.destination);
     // lowPass2.connect(AC.destination);
     // bandPass2.connect(AC.destination);
+    // console.log(gainConvolver1);
 
-    gain1.connect(convolver1).connect(AC.destination);
-    convolver1.normalize = false;
+
+    // gain1.connect(convolver1).connect(wave1).connect(AC.destination);
+    // convolver1.normalize = false;
 
     // console.log(convolver1);
     // console.log(wave1);
@@ -160,21 +164,11 @@ class App extends Component {
 
     /*
     |--------------------------------------------------------------------------
-    | Testing
+    | Defining Node Properties
     |--------------------------------------------------------------------------
     */
 
-    // testing gain
-    // hpGain1.gain.setValueAtTime(100, AC.currentTime);
-    // gainNode2.gain.setValueAtTime(1, AC.currentTime);
-
-    // testing delay
-    // delay1.delayTime.setValueAtTime(0, AC.currentTime);
-    // delayNode2.delayTime.setValueAtTime(0, AC.currentTime);
-
-    // console.log(delayNode1.delayTime);
-
-    // testing biquad filter
+    // biquad filter
     // high pass
     highPass1.type = 'highpass';
     highPass1.frequency.value = 1000;
@@ -253,11 +247,18 @@ class App extends Component {
         left: wave1,
         right: 0,
       },
-      // wave changer node for distortion
-      distort: {
-        left: 0,
-        right: 0,
+      reverb:{
+        left:reverb1,
+        right:0,
       },
+      // // wave changer node for distortion
+      // distort: {
+      //   left: 0,
+      //   right: 0,
+      // },
+      // reverb:{
+
+      // },
       // initial play state
       play: {
         left: false,
@@ -321,6 +322,10 @@ class App extends Component {
         left: 0,
         right: 0,
       },
+      rev: {
+        left: 0,
+        right: 0,
+      },
       reg: {
         email: '',
         username: '',
@@ -364,6 +369,7 @@ class App extends Component {
     this.crossfade = this.crossfade.bind(this);
     this.biquad = this.biquad.bind(this);
     this.distortion = this.distortion.bind(this);
+    this.reverb = this.reverb.bind(this);
     this.sampler = this.sampler.bind(this);
     this.input = this.input.bind(this);
     this.register = this.register.bind(this);
@@ -509,6 +515,13 @@ class App extends Component {
     // console.log(side);
     this.stateSet('dis', side, dis);
     this.state.wave[side].curve = this.makeDistortionCurve(dis);
+  }
+
+  reverb(rev, side) {
+    this.stateSet('rev', side, rev);
+    this.state.reverb[side].gain.value = rev;
+    console.log(this.state.reverb[side])
+
   }
 
   // runtime(rtime, song, side) {
@@ -735,6 +748,8 @@ class App extends Component {
               biquad={this.biquad}
               dis={this.state.dis}
               distortion={this.distortion}
+              rev={this.state.rev}
+              reverb={this.reverb}
             />)}
           />
         </Switch>

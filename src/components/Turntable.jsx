@@ -21,6 +21,8 @@ export default function Turntable(props) {
         biquad={props.biquad}
         dis={props.dis.left}
         distortion={props.distortion}
+        rev={props.rev.left}
+        reverb={props.reverb}
         // runtime={props.runtime}
         // rtime={props.rtime.rt1}
         // dur={props.dur.d1}
@@ -40,6 +42,8 @@ export default function Turntable(props) {
         biquad={props.biquad}
         dis={props.dis.right}
         distortion={props.distortion}
+        rev={props.rev.right}
+        reverb={props.reverb}
         // runtime={props.runtime}
         // rtime={props.rtime.rt2}
         // dur={props.dur.d2}

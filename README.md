@@ -1,6 +1,6 @@
 # DJ App
 <!-- A dj app for single use and two player collabs -->
-A DJ App with functional turntables and EQ/FX/Crossfader for aspiring DJs and for collaborative DJ activities (coming soon!) using React for front end and Ruby on Rails for back end (back end tentative)
+A DJ App with functional turntables and EQ/FX/Crossfader for aspiring DJs and for collaborative DJ activities (coming soon!) using React for front end and Firebase for back end
 
 # Project Overview
 
@@ -49,7 +49,7 @@ This project is based off of a DJ's turntable/controller. It will attempt to rep
 - As a user, I should be able to add filters to music.
 - As a user, I should be able to change music with equalizers.
 - As a user, I should be able to manipulate music via interaction with virtual jog wheel
-- As a user, I should be able to log in and store a list of music that can be played back.
+- As a user, I should be able to log in, store filter settings, and store list of music for playback.
 
 ## App Components
 - Jog Wheel
@@ -65,12 +65,12 @@ This project is based off of a DJ's turntable/controller. It will attempt to rep
 
 ### MVP
 - Play music
-- Ability to scratch/change music playback via jog wheel
+- Login/Register/Auth
 - Ability to add effects to music
 
 ### POST MVP
+- Ability to scratch/change music playback via jog wheel
 - Port to React Native
-- Login/Register/Auth
 - Store user songs
 - Ability for two people to mix songs
 
@@ -83,7 +83,8 @@ This project is based off of a DJ's turntable/controller. It will attempt to rep
 ## Libraries/Frameworks
 
 React
-Ruby on Rails
+Firebase
+Web Audio API
 
 ## Code Snippet
 
@@ -98,3 +99,19 @@ Ruby on Rails
 
 
 ## References
+
+### Firebase
+https://css-tricks.com/intro-firebase-react/
+https://www.robinwieruch.de/complete-firebase-authentication-react-tutorial/
+classmates and TAs
+
+### Audio
+https://www.teachmeaudio.com/mixing/techniques/audio-spectrum
+
+### Web Audio API
+https://css-tricks.com/introduction-web-audio-api/
+https://www.html5rocks.com/en/tutorials/webaudio/intro/
+http://blog.chrislowis.co.uk/2014/07/23/dub-delay-web-audio-api.html
+http://masf-html5.blogspot.com/2016/04/html5-audio-most-useful-filter-nodes.html
+https://web-audio-api.firebaseapp.com/convolver-node
+https://gamedevelopment.tutsplus.com/tutorials/creating-dynamic-sound-with-the-web-audio-api--cms-24564

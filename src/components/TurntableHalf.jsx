@@ -15,6 +15,8 @@ export default function TurntableHalf(props) {
           side={props.side}
           dis={props.dis}
           distortion={props.distortion}
+          rev={props.rev}
+          reverb={props.reverb}
         />
         <Vinyl />
         <DrumPads
