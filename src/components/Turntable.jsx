@@ -23,6 +23,10 @@ export default function Turntable(props) {
         distortion={props.distortion}
         rev={props.rev.left}
         reverb={props.reverb}
+        del={props.del.left}
+        delay={props.delay}
+        fb={props.fb.left}
+        feedback={props.feedback}
         // runtime={props.runtime}
         // rtime={props.rtime.rt1}
         // dur={props.dur.d1}
@@ -44,6 +48,10 @@ export default function Turntable(props) {
         distortion={props.distortion}
         rev={props.rev.right}
         reverb={props.reverb}
+        del={props.del.right}
+        delay={props.delay}
+        fb={props.fb.right}
+        feedback={props.feedback}
         // runtime={props.runtime}
         // rtime={props.rtime.rt2}
         // dur={props.dur.d2}

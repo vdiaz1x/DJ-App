@@ -12,7 +12,9 @@ export default function DrumPads(props) {
      </button>));
 
   // console.log(drumSample);
-  const play = !props.pause ? 'play' : 'pause';
+  // console.log(props.songs)
+  // console.log(props.songs[props.side])
+  const play = props.songs.currentTime !== 0 || !props.pause ? 'play' : 'pause';
   return (
     <section className="drum-pads">
       <h4 className="tb-title">Sample Deck</h4>

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import firebase, { auth, provider, db } from './firebase.js';
+import { auth, db } from './firebase.js';
 import { Route, Switch } from 'react-router-dom';
 
 // importing music
-// import test from './test.mp3';
-// import chika from './chika.mp3';
+import left from './test.mp3';
+import right from './chika.mp3';
 
-import left from './control.mp3';
-import right from './clarity.mp3';
+// import left from './control.mp3';
+// import right from './clarity.mp3';
 import impulse from './impulse.wav';
 
 import bomb from './samples/flexbomb.mp3';
@@ -17,7 +17,7 @@ import lex from './samples/lexluger.mp3';
 
 // importing turntable components
 import Nav from './components/Nav';
-import End from './components/End';
+// import End from './components/End';
 import Turntable from './components/Turntable';
 
 // importing register/log in forms
@@ -63,48 +63,12 @@ class App extends Component {
     const source1 = AC.createMediaElementSource(l);
     const source2 = AC.createMediaElementSource(r);
 
-    /*
-    |--------------------------------------------------------------------------
-    | Web Audio API Nodes
-    |--------------------------------------------------------------------------
-    */
-
-    // creates gain nodes
-    const gain1 = AC.createGain();
-    const gain2 = AC.createGain();
-
-    // creates delay nodes
-    const delay1 = AC.createDelay();
-    const delay2 = AC.createDelay();
-
-    const delayGain1 = AC.createGain();
-    const delayGain2 = AC.createGain();
-
-    // creates biquad filter nodes
-    const highPass1 = AC.createBiquadFilter();
-    // const hpGain1 = AC.createGain();
-    const lowPass1 = AC.createBiquadFilter();
-    const bandPass1 = AC.createBiquadFilter();
-
-    const highPass2 = AC.createBiquadFilter();
-    const lowPass2 = AC.createBiquadFilter();
-    const bandPass2 = AC.createBiquadFilter();
-
-    // creates convolver
-    const convolver1 = AC.createConvolver();
-    const reverb1 = AC.createGain();
-
-    // creates wave shaper
-    const wave1 = AC.createWaveShaper();
-
     // fetch the file from the server and return a response object to the next .then()
     // example taken from https://web-audio-api.firebaseapp.com/convolver-node
     fetch(impulse)
       // retrieve and return an ArrayBuffer to the next .then()
       .then(response => response.arrayBuffer())
       .then((buffer) => {
-        console.log('BUFFED');
-
         // decode the ArrayBuffer as an AudioBuffer
         AC.decodeAudioData(buffer, (decoded) => {
           // store the resulting AudioBuffer
@@ -115,14 +79,52 @@ class App extends Component {
 
     /*
     |--------------------------------------------------------------------------
+    | Web Audio API Nodes
+    |--------------------------------------------------------------------------
+    */
+
+    // creates gain nodes
+    const gain1 = AC.createGain();
+    const gain2 = AC.createGain();
+
+    // creates biquad filter nodes
+    const highPass1 = AC.createBiquadFilter();
+    const lowPass1 = AC.createBiquadFilter();
+    const bandPass1 = AC.createBiquadFilter();
+
+    const highPass2 = AC.createBiquadFilter();
+    const lowPass2 = AC.createBiquadFilter();
+    const bandPass2 = AC.createBiquadFilter();
+
+    // creates convolver nodes
+    const convolver1 = AC.createConvolver();
+    const reverb1 = AC.createGain();
+
+    // creates wave shaper nodes
+    const wave1 = AC.createWaveShaper();
+
+    // create dynamic conpressor nodes
+    const dynamic1 = AC.createDynamicsCompressor();
+
+    // creates delay nodes
+    const delay1 = AC.createDelay(2);
+    const delay2 = AC.createDelay(2);
+
+    const delayGain1 = AC.createGain(3);
+    const delayGain2 = AC.createGain(3);
+
+    const delayFilter1 = AC.createBiquadFilter();
+
+    /*
+    |--------------------------------------------------------------------------
     | Connecting Audio Nodes
     |--------------------------------------------------------------------------
     */
 
-    // connecting the source to the filters
-    source1.connect(highPass1);
-    source1.connect(bandPass1);
-    source1.connect(lowPass1);
+    // connecting the source to the filter nodes and the gain
+    source1.connect(highPass1).connect(gain1);
+    source1.connect(bandPass1).connect(gain1);
+    source1.connect(lowPass1).connect(gain1);
 
     // connecting the filter nodes to the gain
     highPass1.connect(gain1);
@@ -133,34 +135,19 @@ class App extends Component {
     // gain1.connect(delay1);
     // gainNode2.connect(delayNode2);
 
-    // connecting the source to the convolver and the wave changer
-    reverb1.gain.value = 0;
+    // connecting the source to the convolver node and the wave changer node
+    // source1.connect(reverb1).connect(convolver1).connect(wave1).connect(gain1);
 
-    source1.connect(reverb1).connect(convolver1).connect(wave1).connect(gain1);
+    // connecting the source to the delay node and the delay gain/filter nodes
+    source1.connect(delayGain1).connect(delayFilter1).connect(delay1)
+      .connect(dynamic1)
+      .connect(gain1);
+    // delay1.connect(delayFilter1).connect(delayGain1).connect(delay1)
+    // .connect(gain1);
 
 
     // connecting the gain node to the speakers (destination)
     gain1.connect(AC.destination);
-
-    // lowPass1.disconnect(0)
-
-    // // adding destination so sound can be played
-    // highPass1.connect(AC.destination);
-    // lowPass1.connect(AC.destination);
-    // bandPass1.connect(AC.destination);
-
-    // highPass2.connect(AC.destination);
-    // lowPass2.connect(AC.destination);
-    // bandPass2.connect(AC.destination);
-    // console.log(gainConvolver1);
-
-
-    // gain1.connect(convolver1).connect(wave1).connect(AC.destination);
-    // convolver1.normalize = false;
-
-    // console.log(convolver1);
-    // console.log(wave1);
-
 
     /*
     |--------------------------------------------------------------------------
@@ -199,6 +186,21 @@ class App extends Component {
     lowPass2.frequency.value = 250;
     lowPass2.Q.value = 1;
 
+    // initial reverb
+    reverb1.gain.value = 0;
+
+    // initial dynamic compressor delay
+    dynamic1.threshold.value = -50;
+    dynamic1.knee.value = 40;
+    dynamic1.ratio.value = 12;
+    dynamic1.attack.value = 0.1;
+    dynamic1.release.value = 0.3;
+
+    delay1.delayTime.value = 0;
+    delayGain1.gain.value = 0;
+    delayFilter1.type = 'lowpass';
+    delayFilter1.frequency.value = 600;
+
     /*
     |--------------------------------------------------------------------------
     | Initializing State
@@ -206,7 +208,7 @@ class App extends Component {
     */
 
     this.state = {
-      // Web Audio API Contet
+      // Web Audio API Content
       AC,
       // songs on deck
       songs: {
@@ -242,23 +244,26 @@ class App extends Component {
         left: bandPass1,
         right: bandPass2,
       },
-      // wave changer node to change distortion
+      // wave changer node to changengng distortion
       wave: {
         left: wave1,
         right: 0,
       },
-      reverb:{
-        left:reverb1,
-        right:0,
+      // reverb node to change reverb
+      reverb: {
+        left: reverb1,
+        right: 0,
       },
-      // // wave changer node for distortion
-      // distort: {
-      //   left: 0,
-      //   right: 0,
-      // },
-      // reverb:{
-
-      // },
+      // delay node to change delay time
+      delay: {
+        left: delay1,
+        right: 0,
+      },
+      // delay gain node for delay gain
+      feedback: {
+        left: delayGain1,
+        right: 0,
+      },
       // initial play state
       play: {
         left: false,
@@ -274,6 +279,7 @@ class App extends Component {
       // 0 is the center (both songs)
       // -100 is the left song and 100 is the right song
       cfade: 0,
+      // initial biquad filters state
       bq: {
         hpass: {
           Q: {
@@ -318,14 +324,25 @@ class App extends Component {
           },
         },
       },
+      // innitial distortion state
       dis: {
         left: 0,
         right: 0,
       },
+      // initial reverb state
       rev: {
         left: 0,
         right: 0,
       },
+      del: {
+        left: 0,
+        right: 0,
+      },
+      fb: {
+        left: 0,
+        right: 0,
+      },
+      // user registration data
       reg: {
         email: '',
         username: '',
@@ -333,11 +350,13 @@ class App extends Component {
         passwordCheck: '',
         error: null,
       },
+      // user login data
       log: {
         email: '',
         password: '',
         error: null,
       },
+      // user data when logged in
       user: null,
     };
 
@@ -360,8 +379,7 @@ class App extends Component {
     |--------------------------------------------------------------------------
     */
 
-    // bindings
-    // this.stateSet = this.stateSet.bind(this);
+    // function bindings
     // this.scratch = this.scratch.bind(this);
     this.playSong = this.playSong.bind(this);
     this.stopSong = this.stopSong.bind(this);
@@ -370,6 +388,8 @@ class App extends Component {
     this.biquad = this.biquad.bind(this);
     this.distortion = this.distortion.bind(this);
     this.reverb = this.reverb.bind(this);
+    this.delay = this.delay.bind(this);
+    this.feedback = this.feedback.bind(this);
     this.sampler = this.sampler.bind(this);
     this.input = this.input.bind(this);
     this.register = this.register.bind(this);
@@ -377,13 +397,12 @@ class App extends Component {
     this.logout = this.logout.bind(this);
     this.save = this.save.bind(this);
     this.retrieve = this.retrieve.bind(this);
-
     // this.runtime = this.runtime.bind(this);
   }
 
   /*
   |--------------------------------------------------------------------------
-  | Function
+  | DJ Functions
   |--------------------------------------------------------------------------
   */
 
@@ -452,7 +471,7 @@ class App extends Component {
     // sets the gain to the value of the volume slider
     // gain starts at 100% (full volume)
     // can increase to 200% of its value
-    this.state.gain[side].gain.setValueAtTime(vol / 100, this.state.AC.currentTime);
+    this.state.gain[side].gain.value = vol / 100;
   }
 
   // crossfades the two songs (which song is playing at any given time)
@@ -496,8 +515,8 @@ class App extends Component {
 
     // sets the volume of the songs for crossfading
     // this.state.songs.left.vol = v1;
-    this.state.gain.left.gain.setValueAtTime(v1, this.state.AC.currentTime);
-    this.state.gain.right.gain.setValueAtTime(v2, this.state.AC.currentTime);
+    this.state.gain.left.gain.value = v1;
+    this.state.gain.right.gain.value = v2;
     // this.volume(v1, this.state.songs.left, 'left');
   }
 
@@ -510,9 +529,6 @@ class App extends Component {
   }
 
   distortion(dis, side) {
-    // console.log('DISTORT');
-    // console.log(dis);
-    // console.log(side);
     this.stateSet('dis', side, dis);
     this.state.wave[side].curve = this.makeDistortionCurve(dis);
   }
@@ -520,8 +536,25 @@ class App extends Component {
   reverb(rev, side) {
     this.stateSet('rev', side, rev);
     this.state.reverb[side].gain.value = rev;
-    console.log(this.state.reverb[side])
+  }
 
+  delay(del, side) {
+    this.stateSet('del', side, del);
+    // console.log(this.state.delay[side].delayTime.value);
+    this.state.delay[side].delayTime.value = del;
+  }
+
+  feedback(fb, side) {
+    this.stateSet('fb', side, fb);
+    // console.log(this.state.fb);
+    // console.log(this.state.feedback[side].gain.value);
+    // console.log(this.state.feedback[side].gain);
+
+
+    this.state.feedback[side].gain.value = fb;
+    // this.state.feedback[side].gain.linearRampToValueAtTime(fb, this.state.AC.currentTime + this.state.del[side]);
+
+    // console.log("feedback")
   }
 
   // runtime(rtime, song, side) {
@@ -550,12 +583,12 @@ class App extends Component {
   // tutorials/creating-dynamic-sound-with-
   // the-web-audio-api--cms-24564
   makeDistortionCurve(amount) {
-    let k = typeof amount === 'number' ? amount : 50,
-      n_samples = 44100,
-      curve = new Float32Array(n_samples),
-      deg = Math.PI / 180,
-      i = 0,
-      x;
+    const k = typeof amount === 'number' ? amount : 50;
+    const n_samples = 44100;
+    const curve = new Float32Array(n_samples);
+    const deg = Math.PI / 180;
+    let i = 0;
+    let x;
     for (; i < n_samples; ++i) {
       x = i * 2 / n_samples - 1;
       curve[i] = (3 + k) * x * 20 * deg /
@@ -662,7 +695,6 @@ class App extends Component {
   }
 
   logout() {
-    // console.log(this.state.user);
     auth.signOut();
     this.setState({
       user: null,
@@ -675,11 +707,6 @@ class App extends Component {
       ...this.state,
       user: {},
     };
-
-    // console.log(config);
-
-    // const cfg = firebase.database()
-    // console.log(cfg);
 
     db.ref(`users/${this.state.user.uid}/config`).push(config);
   }
@@ -702,8 +729,6 @@ class App extends Component {
 
   // render
   render() {
-    // console.log(db);
-
     return (
       <div className="App">
         <Nav
@@ -750,6 +775,10 @@ class App extends Component {
               distortion={this.distortion}
               rev={this.state.rev}
               reverb={this.reverb}
+              del={this.state.del}
+              delay={this.delay}
+              fb={this.state.fb}
+              feedback={this.feedback}
             />)}
           />
         </Switch>
