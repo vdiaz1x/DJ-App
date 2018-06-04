@@ -46,7 +46,6 @@ class App extends Component {
     const l = new Audio(left);
     const r = new Audio(right);
     // let decode;
-    // t.playbackRate = 0.5;
     // console.log(db);
 
     // creating samples
@@ -73,6 +72,7 @@ class App extends Component {
         AC.decodeAudioData(buffer, (decoded) => {
           // store the resulting AudioBuffer
           convolver1.buffer = decoded;
+          convolver2.buffer = decoded;
         })
           .catch(err => console.log('BUFFER?', err));
       });
@@ -100,20 +100,28 @@ class App extends Component {
     const convolver1 = AC.createConvolver();
     const reverb1 = AC.createGain();
 
+    const convolver2 = AC.createConvolver();
+    const reverb2 = AC.createGain();
+
     // creates wave shaper nodes
     const wave1 = AC.createWaveShaper();
+    const wave2 = AC.createWaveShaper();
 
     // create dynamic conpressor nodes
     const dynamic1 = AC.createDynamicsCompressor();
+    const dynamic2 = AC.createDynamicsCompressor();
 
     // creates delay nodes
     const delay1 = AC.createDelay(2);
     const delay2 = AC.createDelay(2);
 
+    // creates delay gain nodes
     const delayGain1 = AC.createGain(3);
     const delayGain2 = AC.createGain(3);
 
+    // creates delay filter nodes
     const delayFilter1 = AC.createBiquadFilter();
+    const delayFilter2 = AC.createBiquadFilter();
 
     /*
     |--------------------------------------------------------------------------
@@ -126,28 +134,31 @@ class App extends Component {
     source1.connect(bandPass1).connect(gain1);
     source1.connect(lowPass1).connect(gain1);
 
-    // connecting the filter nodes to the gain
-    highPass1.connect(gain1);
-    lowPass1.connect(gain1);
-    bandPass1.connect(gain1);
-
-    // connecting the delayNode to add delay effect
-    // gain1.connect(delay1);
-    // gainNode2.connect(delayNode2);
+    source2.connect(highPass2).connect(gain2);
+    source2.connect(bandPass2).connect(gain2);
+    source2.connect(lowPass2).connect(gain2);
 
     // connecting the source to the convolver node and the wave changer node
-    // source1.connect(reverb1).connect(convolver1).connect(wave1).connect(gain1);
+    source1.connect(reverb1).connect(convolver1).connect(wave1).connect(gain1);
+    source2.connect(reverb2).connect(convolver2).connect(wave2).connect(gain2);
 
     // connecting the source to the delay node and the delay gain/filter nodes
-    source1.connect(delayGain1).connect(delayFilter1).connect(delay1)
+    source1.connect(delayGain1)
+      .connect(delayFilter1)
+      .connect(delay1)
       .connect(dynamic1)
       .connect(gain1);
-    // delay1.connect(delayFilter1).connect(delayGain1).connect(delay1)
-    // .connect(gain1);
 
+    source2.connect(delayGain2)
+      .connect(delayFilter2)
+      .connect(delay2)
+      .connect(dynamic2)
+      .connect(gain2);
 
     // connecting the gain node to the speakers (destination)
     gain1.connect(AC.destination);
+    gain2.connect(AC.destination);
+
 
     /*
     |--------------------------------------------------------------------------
@@ -188,18 +199,31 @@ class App extends Component {
 
     // initial reverb
     reverb1.gain.value = 0;
+    reverb2.gain.value = 0;
 
-    // initial dynamic compressor delay
+    // initial dynamic compressor
     dynamic1.threshold.value = -50;
     dynamic1.knee.value = 40;
     dynamic1.ratio.value = 12;
     dynamic1.attack.value = 0.1;
     dynamic1.release.value = 0.3;
 
+    dynamic2.threshold.value = -50;
+    dynamic2.knee.value = 40;
+    dynamic2.ratio.value = 12;
+    dynamic2.attack.value = 0.1;
+    dynamic2.release.value = 0.3;
+
+    // initial delay
     delay1.delayTime.value = 0;
     delayGain1.gain.value = 0;
     delayFilter1.type = 'lowpass';
     delayFilter1.frequency.value = 600;
+
+    delay2.delayTime.value = 0;
+    delayGain2.gain.value = 0;
+    delayFilter2.type = 'lowpass';
+    delayFilter2.frequency.value = 600;
 
     /*
     |--------------------------------------------------------------------------
@@ -247,22 +271,22 @@ class App extends Component {
       // wave changer node to changengng distortion
       wave: {
         left: wave1,
-        right: 0,
+        right: wave2,
       },
       // reverb node to change reverb
       reverb: {
         left: reverb1,
-        right: 0,
+        right: reverb2,
       },
       // delay node to change delay time
       delay: {
         left: delay1,
-        right: 0,
+        right: delay2,
       },
       // delay gain node for delay gain
       feedback: {
         left: delayGain1,
-        right: 0,
+        right: delayGain2,
       },
       // initial play state
       play: {
@@ -281,6 +305,7 @@ class App extends Component {
       cfade: 0,
       // initial biquad filters state
       bq: {
+        // high pass
         hpass: {
           Q: {
             left: 0,
@@ -295,6 +320,7 @@ class App extends Component {
             right: 0,
           },
         },
+        // band pass (mid pass)
         bpass: {
           Q: {
             left: 0,
@@ -309,6 +335,7 @@ class App extends Component {
             right: 0,
           },
         },
+        // low pass
         lpass: {
           Q: {
             left: 0,
@@ -334,13 +361,25 @@ class App extends Component {
         left: 0,
         right: 0,
       },
+      // initial delay state
       del: {
         left: 0,
         right: 0,
       },
+      // initial feedback state
       fb: {
         left: 0,
         right: 0,
+      },
+      // initial playback rate state
+      spd: {
+        left: 1,
+        right: 1,
+      },
+      wheel: {
+
+        left: '',
+        right: '',
       },
       // user registration data
       reg: {
@@ -380,9 +419,9 @@ class App extends Component {
     */
 
     // function bindings
-    // this.scratch = this.scratch.bind(this);
     this.playSong = this.playSong.bind(this);
     this.stopSong = this.stopSong.bind(this);
+    this.speed = this.speed.bind(this);
     this.volume = this.volume.bind(this);
     this.crossfade = this.crossfade.bind(this);
     this.biquad = this.biquad.bind(this);
@@ -397,6 +436,7 @@ class App extends Component {
     this.logout = this.logout.bind(this);
     this.save = this.save.bind(this);
     this.retrieve = this.retrieve.bind(this);
+    this.scratch = this.scratch.bind(this);
     // this.runtime = this.runtime.bind(this);
   }
 
@@ -528,33 +568,82 @@ class App extends Component {
     this.state[filter][side][parameter].value = value;
   }
 
+  // changes the parameter of the wave changer for distortion
   distortion(dis, side) {
+    // setting the filter values for later use
     this.stateSet('dis', side, dis);
+    // sets the value of the filter
     this.state.wave[side].curve = this.makeDistortionCurve(dis);
   }
 
+  // changes the parameter of the delay gain for the reverb
   reverb(rev, side) {
+    // setting the filter values for later use
     this.stateSet('rev', side, rev);
+    // sets the value of the filter
     this.state.reverb[side].gain.value = rev;
   }
 
+  // changes the parameter of the time for the delay
   delay(del, side) {
+    // setting the filter values for later use
     this.stateSet('del', side, del);
-    // console.log(this.state.delay[side].delayTime.value);
+    // sets the value of the filter
     this.state.delay[side].delayTime.value = del;
   }
 
+  // changes the gain volume of the delay
   feedback(fb, side) {
+    // setting the filter values for later use
     this.stateSet('fb', side, fb);
-    // console.log(this.state.fb);
-    // console.log(this.state.feedback[side].gain.value);
-    // console.log(this.state.feedback[side].gain);
-
-
+    // sets the value of the filter
     this.state.feedback[side].gain.value = fb;
-    // this.state.feedback[side].gain.linearRampToValueAtTime(fb, this.state.AC.currentTime + this.state.del[side]);
+  }
 
-    // console.log("feedback")
+  // setting the playback rate to speed up or slow down a song
+  speed(spd, song, side) {
+    // setting the playback rate for later use
+    this.stateSet('spd', side, spd);
+    // sets the value of the playback
+    song.playbackRate = spd;
+  }
+
+  // movig the turntable
+  async scratch(e, jog, side) {
+    console.log(side);
+    // e.preventDefault();
+    e.persist();
+    // console.log('scratch');
+    // console.log(e);
+    // console.log(e.target);
+    // console.log(e.Target);
+
+    // console.log(e.nativeEvent);
+
+    await this.setState({
+      wheel: {
+        ...this.state.wheel,
+        [side]: jog,
+      },
+    });
+
+    const a = e.nativeEvent.layerY;
+    const b = e.nativeEvent.layerX;
+
+    console.log(a, b);
+    const img = await new Image(0,0);
+    await e.dataTransfer.setDragImage(img, 0, 0);
+
+    const angle = await Math.atan(a / b) * (180 / Math.PI);
+
+    await console.log(this.state.wheel);
+        await console.log(this.state.wheel[side]);
+
+    await console.log(this.state.wheel[side].style);
+
+
+
+    e.target.style.transform = await `rotate(${angle}deg)`;
   }
 
   // runtime(rtime, song, side) {
@@ -611,6 +700,8 @@ class App extends Component {
 
   // storing the value of the input elements in the state
   input(e, info, state) {
+    console.log(e);
+    console.log(e.target.value);
     // checking to see if there is a value to input
     const val = (e.target !== undefined) ? e.target.value : '';
     // setting state
@@ -779,6 +870,9 @@ class App extends Component {
               delay={this.delay}
               fb={this.state.fb}
               feedback={this.feedback}
+              spd={this.state.spd}
+              speed={this.speed}
+              scratch={this.scratch}
             />)}
           />
         </Switch>

@@ -27,10 +27,12 @@ export default function Turntable(props) {
         delay={props.delay}
         fb={props.fb.left}
         feedback={props.feedback}
+        spd={props.spd.left}
+        speed={props.speed}
         // runtime={props.runtime}
         // rtime={props.rtime.rt1}
         // dur={props.dur.d1}
-        // scratch={props.scratch}
+        scratch={props.scratch}
       />
       <TurntableHalf
         side="right"
@@ -52,10 +54,12 @@ export default function Turntable(props) {
         delay={props.delay}
         fb={props.fb.right}
         feedback={props.feedback}
+        spd={props.spd.right}
+        speed={props.speed}
         // runtime={props.runtime}
         // rtime={props.rtime.rt2}
         // dur={props.dur.d2}
-        // scratch={props.scratch}
+        scratch={props.scratch}
       />
       <Crossfader
         cfade={props.cfade}
