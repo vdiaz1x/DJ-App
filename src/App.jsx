@@ -24,6 +24,7 @@ import Turntable from './components/Turntable';
 import Register from './components/Register';
 import Login from './components/Login';
 
+// App class
 class App extends Component {
   constructor(props) {
     super(props);
@@ -123,6 +124,66 @@ class App extends Component {
     const delayFilter1 = AC.createBiquadFilter();
     const delayFilter2 = AC.createBiquadFilter();
 
+    const analyser1 = AC.createAnalyser();
+    analyser1.smoothingTimeConstant = 0.3;
+    analyser1.fftSize = 1024;
+
+    const script1 = AC.createScriptProcessor(2048, 1, 1);
+
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = 'green';
+    ctx.fillRect(10, 10, 100, 100);
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+    gradient.addColorStop(1, '#000000');
+    gradient.addColorStop(0.75, '#ff0000');
+    gradient.addColorStop(0.25, '#ffff00');
+    gradient.addColorStop(0, '#ffffff');
+    // when the javascript node is called
+    // we use information from the analyzer node
+    // to draw the volume
+    // when the javascript node is called
+    // we use information from the analyzer node
+    // to draw the volume
+    script1.onaudioprocess = function () {
+
+      // get the average for the first channel
+      var array = new Uint8Array(analyser1.frequencyBinCount);
+      analyser1.getByteFrequencyData(array);
+
+      // clear the current state
+      ctx.clearRect(0, 0, 1000, 325);
+
+      // set the fill style
+      ctx.fillStyle = gradient;
+      drawSpectrum(array);
+
+    }
+    function drawSpectrum(array) {
+      for (var i = 0; i < (array.length); i++) {
+        var value = array[i];
+        ctx.fillRect(i * 5, 325 - value, 3, 325);
+      }
+    };
+
+    function getAverageVolume(array) {
+      var values = 0;
+      var average;
+
+      var length = array.length;
+
+      // get all the frequency amplitudes
+      for (var i = 0; i < length; i++) {
+        values += array[i];
+      }
+
+      average = values / length;
+      return average;
+    }
+
+
     /*
     |--------------------------------------------------------------------------
     | Connecting Audio Nodes
@@ -143,22 +204,12 @@ class App extends Component {
     source2.connect(reverb2).connect(convolver2).connect(wave2).connect(gain2);
 
     // connecting the source to the delay node and the delay gain/filter nodes
-    source1.connect(delayGain1)
-      .connect(delayFilter1)
-      .connect(delay1)
-      .connect(dynamic1)
-      .connect(gain1);
-
-    source2.connect(delayGain2)
-      .connect(delayFilter2)
-      .connect(delay2)
-      .connect(dynamic2)
-      .connect(gain2);
+    source1.connect(delayGain1).connect(delayFilter1).connect(delay1).connect(dynamic1).connect(gain1);
+    source2.connect(delayGain2).connect(delayFilter2).connect(delay2).connect(dynamic2).connect(gain2);
 
     // connecting the gain node to the speakers (destination)
     gain1.connect(AC.destination);
     gain2.connect(AC.destination);
-
 
     /*
     |--------------------------------------------------------------------------
@@ -743,11 +794,6 @@ class App extends Component {
     const { email, password } = this.state.log;
     auth.signInWithEmailAndPassword(email, password)
       .then((res) => {
-        // console.log(res);
-        // console.log(res.user);
-        // console.log(res.user.Q);
-
-
         this.setState(() => ({
           log: {
             email: '',
@@ -857,6 +903,8 @@ class App extends Component {
               speed={this.speed}
               scratch={this.scratch}
             />)}
+            <canvas id="canvas" width={400} height={400}></canvas>
+
           />
         </Switch>
 
