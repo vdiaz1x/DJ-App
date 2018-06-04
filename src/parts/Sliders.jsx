@@ -11,6 +11,7 @@ export default function Sliders(props) {
     <section className="sliders">
       <div className="slider-bar">
         <Slider
+          className="volume"
           min={0}
           max={200}
           value={vol}
@@ -18,9 +19,11 @@ export default function Sliders(props) {
           orientation="vertical"
           onChange={vol => props.volume(vol, props.songs, props.side)}
         />
+        <h6 className="eq-subtitle">Volume Gain</h6>
       </div>
       <div className="slider-bar">
         <Slider
+          className="speed"
           min={0.75}
           max={1.25}
           step={0.05}
@@ -29,6 +32,7 @@ export default function Sliders(props) {
           orientation="vertical"
           onChange={spd => props.speed(spd, props.songs, props.side)}
         />
+        <h6 className="eq-subtitle">Playback Speed</h6>
       </div>
     </section>
   );

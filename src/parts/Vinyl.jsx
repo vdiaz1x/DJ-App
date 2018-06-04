@@ -10,20 +10,16 @@ export default function Vinyl(props) {
 
   // const { rtime } = props;
 
-  const jog = <div draggable="true" className="jog-wheel" />;
+  const jog = <div draggable="true" className="jog-wheel" onDrag={e => props.scratch(e, jog, props.side)} onDragStart={(e)=>{
+    const img = new Image(0, 0);
+    img.src = "llfkd knd"
+    e.dataTransfer.setDragImage(img, 0, 0);
+  }}/>;
 
 
   return (
     <section className="vinyl">
-
-      <div className="jog" onDrag={e => props.scratch(e, jog, props.side)}> {jog}</div>
-      <Slider
-        min={0}
-        // max={props.dur}
-        // value={props.rtime}
-        tooltip={false}
-        // onChange={rtime => props.runtime(rtime, song, side)}
-      />
+      {jog}
     </section>
   );
 }

@@ -8,9 +8,10 @@ export default function FX(props) {
   } = props;
   return (
     <section className="fx">
-      <div className="reverb fx-section">
+      <div className="rev fx-section">
         <div className="eq-slider fx-slider-bar">
           <Slider
+            className="distortion"
             min={0}
             max={25}
             value={dis}
@@ -22,6 +23,7 @@ export default function FX(props) {
         </div>
         <div className="eq-slider fx-slider-bar">
           <Slider
+            className="reverb"
             min={0}
             max={3}
             step={0.05}
@@ -36,6 +38,7 @@ export default function FX(props) {
       <div className="delay fx-section">
         <div className="eq-slider fx-slider-bar">
           <Slider
+            className="delay"
             min={0}
             max={1}
             step={0.005}
@@ -48,6 +51,7 @@ export default function FX(props) {
         </div>
         <div className="eq-slider fx-slider-bar">
           <Slider
+            className="feedback"
             min={0}
             max={10}
             step={0.1}

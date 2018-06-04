@@ -146,6 +146,8 @@ a{
 
 .sliders{
   height:40%;
+  display: flex;
+  justify-content: space-around;
   /* border:1px solid red; */
 }
 
@@ -156,13 +158,15 @@ a{
 */
 
 .jog{height:100%;}
+
 .jog-wheel{
-  width:70%;
-  height:50%;
-  background:gray;
+  width:250px;
+  height:250px;
+  background:#222;
   border-radius:50%;
   margin:0 auto;
   position: relative;
+  border:10px solid #111;
 }
 
 .jog-wheel::before{
@@ -171,8 +175,8 @@ a{
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 100px 10px 0 10px;
-  border-color: #111 transparent transparent transparent;
+  border-width: 50px 10px 0 10px;
+  border-color: #777 transparent transparent transparent;
   top:0;
   left:45%;
 }
@@ -335,9 +339,16 @@ a{
   .rangeslider-horizontal .rangeslider__handle:after {width:0;}
 .rangeslider__fill{ background:#ccc !important;}
 
+/* .freq{border:1px solid white;} */
 .freq .rangeslider__fill{ background:red !important;}
 .Q .rangeslider__fill{ background:green !important;}
 .detune .rangeslider__fill{ background:blue !important;}
+.speed .rangeslider__fill{ background:rgb(185, 121, 2) !important;}
+.volume .rangeslider__fill{ background:purple !important;}
+.delay .rangeslider__fill{ background:#222 !important;}
+.feedback .rangeslider__fill{ background:#00540b !important;}
+.distortion .rangeslider__fill{ background:#f2ff00 !important;}
+.reverb .rangeslider__fill{ background:cyan !important;}
 
 
 /*

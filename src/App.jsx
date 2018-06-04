@@ -610,40 +610,23 @@ class App extends Component {
 
   // movig the turntable
   async scratch(e, jog, side) {
-    console.log(side);
-    // e.preventDefault();
     e.persist();
-    // console.log('scratch');
-    // console.log(e);
-    // console.log(e.target);
-    // console.log(e.Target);
-
-    // console.log(e.nativeEvent);
-
-    await this.setState({
-      wheel: {
-        ...this.state.wheel,
-        [side]: jog,
-      },
-    });
 
     const a = e.nativeEvent.layerY;
     const b = e.nativeEvent.layerX;
 
-    console.log(a, b);
-    const img = await new Image(0,0);
-    await e.dataTransfer.setDragImage(img, 0, 0);
+    const img = new Image(0,0);
+    img.src="llfkd knd"
+    e.dataTransfer.setDragImage(img, 0, 0);
 
-    const angle = await Math.atan(a / b) * (180 / Math.PI);
-
-    await console.log(this.state.wheel);
-        await console.log(this.state.wheel[side]);
-
-    await console.log(this.state.wheel[side].style);
+    console.log(e)
+    console.log(e.nativeEvent)
+    console.log(e.dataTransfer);
 
 
+    const angle = Math.atan(a / b) * (180 / Math.PI);
 
-    e.target.style.transform = await `rotate(${angle}deg)`;
+    e.target.style.transform = `rotate(${angle}deg)`;
   }
 
   // runtime(rtime, song, side) {
