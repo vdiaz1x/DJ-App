@@ -3,11 +3,11 @@ import { auth, db } from './firebase.js';
 import { Route, Switch } from 'react-router-dom';
 
 // importing music
-import left from './test.mp3';
-import right from './chika.mp3';
+// import left from './test.mp3';
+// import right from './chika.mp3';
 
-// import left from './control.mp3';
-// import right from './clarity.mp3';
+import left from './control.mp3';
+import right from './clarity.mp3';
 import impulse from './impulse.wav';
 
 import bomb from './samples/flexbomb.mp3';
