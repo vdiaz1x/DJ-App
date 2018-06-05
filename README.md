@@ -2,6 +2,10 @@
 <!-- A dj app for single use and two player collabs -->
 A DJ App with functional turntables and EQ/FX/Crossfader for aspiring DJs and for collaborative DJ activities (coming soon!) using React for front end and Firebase for back end
 
+## Project Deployment
+
+https://dj-app-local.firebaseapp.com
+
 # Project Overview
 
 ## Project Schedule

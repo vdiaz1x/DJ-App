@@ -735,7 +735,7 @@ class App extends Component {
   // storing the value of the input elements in the state
   input(e, info, state) {
     console.log(e);
-    console.log(e.target.value);
+    // console.log(e.target.value);
     // checking to see if there is a value to input
     const val = (e.target !== undefined) ? e.target.value : '';
     // setting state
@@ -749,6 +749,7 @@ class App extends Component {
     });
   }
 
+  // registers user
   register() {
     // pulling the user info from the state
     const {
@@ -759,6 +760,7 @@ class App extends Component {
     auth.createUserWithEmailAndPassword(email, password)
       // if the info is valid, then store the username into the db
       .then((auth) => {
+        // sets info on a object route based on the users unique ID
         db.ref(`users/${auth.user.uid}`).set({
           username,
           email,
@@ -779,7 +781,8 @@ class App extends Component {
       })
       // saves error
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
+        // sets the error in the user state
         this.setState({
           reg: {
             ...this.state.reg,
@@ -789,11 +792,15 @@ class App extends Component {
       });
   }
 
+  // logs in user
   login() {
-    console.log('login');
+    // console.log('login');
+    // pulling the user info from the state
     const { email, password } = this.state.log;
+    // signing in a user with firebase
     auth.signInWithEmailAndPassword(email, password)
       .then((res) => {
+        // if logged in, erase the user info from the state
         this.setState(() => ({
           log: {
             email: '',
@@ -804,7 +811,9 @@ class App extends Component {
         }));
         // history.push(routes.HOME);
       })
+      // saves error
       .catch((err) => {
+        // saves the error in the user state
         this.setState({
           log: {
             ...this.state.log,
@@ -814,33 +823,47 @@ class App extends Component {
       });
   }
 
+  // logs out user
   logout() {
+    // logs user out of firebase
     auth.signOut();
+    // erases user data from state
     this.setState({
       user: null,
     });
   }
 
+  // saves user filter config
   save(e) {
     e.preventDefault();
+    // saves config in object to send
+    // strip user info as it causes issues
     const config = {
       ...this.state,
       user: {},
     };
 
+    // pushes config data into firebase
     db.ref(`users/${this.state.user.uid}/config`).push(config);
   }
 
+  // retrieves user filter config
   retrieve(e) {
     e.preventDefault();
+    // make empty array
     let thing;
     const t2 = [];
-    console.log('retrieve');
+    // console.log('retrieve');
+    // looks for user's config obect in user info from firebase
     db.ref(`users/${this.state.user.uid}/config`).on('value', (config) => {
+      // get the config object
       thing = config.val();
       // console.log(thing);
+      // pushes each config into the empty array
       Object.keys(thing).forEach(key => t2.push(thing[key]));
       // console.log(t2);
+      // sets the state for the user config
+      // hardcoded the first config option for now
       this.setState({
         ...t2[0],
       });
